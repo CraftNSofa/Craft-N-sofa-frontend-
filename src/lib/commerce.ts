@@ -124,6 +124,14 @@ export function subscribeToOrders(onChange: () => void) {
   return supabase().channel('admin-orders').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, onChange).subscribe();
 }
 
+export function subscribeToCatalogue(onChange: () => void) {
+  return supabase()
+    .channel('public-catalogue')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, onChange)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, onChange)
+    .subscribe();
+}
+
 export async function createStorefrontOrder(input: { customerName: string; customerEmail?: string; address: Record<string, unknown>; items: Array<{ productId: number; name: string; quantity: number; sellingPrice: number; costPrice: number }>; shippingFee?: number }) {
   const subtotal = input.items.reduce((sum, item) => sum + item.quantity * item.sellingPrice, 0);
   const orderNumber = `CNS-${Date.now().toString().slice(-8)}`;

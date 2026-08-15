@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { ArrowRight, Check, Menu, Minus, Plus, ShoppingBag, X } from 'lucide-react';
 import type { Product } from './types';
-import { createStorefrontOrder, loadCategories, loadProducts, type RemoteCategory } from './lib/commerce';
+import { createStorefrontOrder, loadCategories, loadProducts, subscribeToCatalogue, type RemoteCategory } from './lib/commerce';
 import './storefront.css';
 
 type CartLine = { product: Product; quantity: number };
@@ -21,7 +21,17 @@ export default function Storefront() {
   const [form, setForm] = useState({ name: '', email: '', city: '', address: '' });
 
   useEffect(() => {
-    Promise.all([loadProducts(), loadCategories()]).then(([items, groups]) => { setProducts(items); setCategories(groups); }).catch(() => undefined).finally(() => setLoading(false));
+    let active = true;
+    const refreshCatalogue = async () => {
+      const [productResult, categoryResult] = await Promise.allSettled([loadProducts(), loadCategories()]);
+      if (!active) return;
+      if (productResult.status === 'fulfilled') setProducts(productResult.value);
+      if (categoryResult.status === 'fulfilled') setCategories(categoryResult.value);
+      setLoading(false);
+    };
+    void refreshCatalogue();
+    const channel = subscribeToCatalogue(() => { void refreshCatalogue(); });
+    return () => { active = false; void channel.unsubscribe(); };
   }, []);
 
   const filtered = useMemo(() => activeCategory === 'All pieces' ? products : products.filter(product => product.category === activeCategory), [activeCategory, products]);
