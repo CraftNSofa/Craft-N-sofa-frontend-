@@ -1,27 +1,15 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Product, SupabaseConfig } from '../types';
 
-export const DEFAULT_SUPABASE_URL = "https://zvkeixogcslxnehplbby.supabase.co";
-export const DEFAULT_SUPABASE_KEY = "sb_publishable_dwBpJpE2V4A9g-dvMSvq7A_1uISngdR";
+export const DEFAULT_SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://zvkeixogcslxnehplbby.supabase.co";
+export const DEFAULT_SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_dwBpJpE2V4A9g-dvMSvq7A_1uISngdR";
 
 export function getSupabaseConfig(): SupabaseConfig {
-  const customUrl = localStorage.getItem('supabase_custom_url');
-  const customKey = localStorage.getItem('supabase_custom_key');
-  return {
-    url: customUrl?.trim() || DEFAULT_SUPABASE_URL,
-    apiKey: customKey?.trim() || DEFAULT_SUPABASE_KEY,
-  };
+  return { url: DEFAULT_SUPABASE_URL.trim(), apiKey: DEFAULT_SUPABASE_KEY.trim() };
 }
 
-export function saveSupabaseConfig(url: string, apiKey: string) {
-  localStorage.setItem('supabase_custom_url', url.trim());
-  localStorage.setItem('supabase_custom_key', apiKey.trim());
-}
-
-export function resetSupabaseConfig() {
-  localStorage.removeItem('supabase_custom_url');
-  localStorage.removeItem('supabase_custom_key');
-}
+export function saveSupabaseConfig(_url: string, _apiKey: string) { /* Configuration is managed through .env files. */ }
+export function resetSupabaseConfig() { /* Configuration is managed through .env files. */ }
 
 let cachedClient: SupabaseClient | null = null;
 let lastUrl = '';
@@ -30,7 +18,7 @@ let lastToken = '';
 
 export function getSupabaseClient(): SupabaseClient {
   const config = getSupabaseConfig();
-  const token = localStorage.getItem('supabase_token') || '';
+  const token = '';
 
   if (cachedClient && lastUrl === config.url && lastKey === config.apiKey && lastToken === token) {
     return cachedClient;
@@ -42,8 +30,8 @@ export function getSupabaseClient(): SupabaseClient {
 
   cachedClient = createClient(config.url, config.apiKey, {
     auth: {
-      persistSession: false,
-      autoRefreshToken: false,
+        persistSession: true,
+        autoRefreshToken: true,
     },
     global: {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -55,7 +43,7 @@ export function getSupabaseClient(): SupabaseClient {
 
 export function getAuthHeaders(token?: string | null): Record<string, string> {
   const config = getSupabaseConfig();
-  const activeToken = token || localStorage.getItem('supabase_token') || '';
+  const activeToken = token || '';
   
   const headers: Record<string, string> = {
     'apikey': config.apiKey,
