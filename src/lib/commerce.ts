@@ -27,9 +27,17 @@ export async function loadCategories(): Promise<RemoteCategory[]> {
   return data ?? [];
 }
 
-export async function upsertCategory(category: Pick<RemoteCategory, 'name' | 'description' | 'active'> & { id?: string }) {
-  const payload = { name: category.name.trim(), description: category.description?.trim() || null, active: category.active };
-  const request = category.id ? supabase().from('categories').update(payload).eq('id', category.id).select().single() : supabase().from('categories').insert(payload).select().single();
+const slugify = (value: string) => value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80) || `category-${Date.now()}`;
+
+export async function upsertCategory(category: Pick<RemoteCategory, 'name' | 'description' | 'active'> & { id?: string; sort_order?: number }) {
+  const payload = {
+    name: category.name.trim(),
+    slug: slugify(category.name),
+    description: category.description?.trim() || null,
+    active: category.active,
+    sort_order: category.sort_order ?? 0,
+  };
+  const request = category.id ? supabase().from('categories').update(payload).eq('id', category.id).select('id,name,description,active,sort_order').single() : supabase().from('categories').insert(payload).select('id,name,description,active,sort_order').single();
   const { data, error } = await request;
   if (error) throw error;
   return data as RemoteCategory;
@@ -46,12 +54,28 @@ export async function loadProducts(): Promise<Product[]> {
   return (data ?? []).map((product: Product & { category_id?: string; cost_price?: number }) => ({ ...product, images: product.images ?? [], colors: product.colors ?? [], image_url: product.image_url ?? '', category: product.category ?? '' }));
 }
 
-export async function saveProduct(product: Product & { cost_price?: number; category_id?: string | null }) {
-  const { id, ...payload } = product;
-  const request = id ? supabase().from('products').update(payload).eq('id', id).select().single() : supabase().from('products').insert(payload).select().single();
+export async function saveProduct(product: Product & { cost_price?: number; category_id?: string | null; published?: boolean }) {
+  const payload = {
+    name: product.name.trim(),
+    description: product.description?.trim() || null,
+    price: Number(product.price) || 0,
+    discount_price: product.discount_price == null ? null : Number(product.discount_price),
+    original_price: product.original_price == null ? null : Number(product.original_price),
+    category: product.category?.trim() || null,
+    category_id: product.category_id ?? null,
+    image_url: product.image_url?.trim() || null,
+    images: product.images ?? [],
+    colors: product.colors ?? [],
+    stock: Number(product.stock) || 0,
+    featured: Boolean(product.featured),
+    cost_price: Number(product.cost_price) || 0,
+    published: product.published ?? true,
+    updated_at: new Date().toISOString(),
+  };
+  const request = product.id ? supabase().from('products').update(payload).eq('id', product.id).select('id,name,description,price,discount_price,original_price,category,image_url,images,colors,stock,featured,created_at,updated_at,category_id,cost_price,published').single() : supabase().from('products').insert(payload).select('id,name,description,price,discount_price,original_price,category,image_url,images,colors,stock,featured,created_at,updated_at,category_id,cost_price,published').single();
   const { data, error } = await request;
   if (error) throw error;
-  return data as Product;
+  return { ...(data as Product), images: data.images ?? [], colors: data.colors ?? [], image_url: data.image_url ?? '', category: data.category ?? '' } as Product;
 }
 
 export async function deleteProduct(id: string | number) {
