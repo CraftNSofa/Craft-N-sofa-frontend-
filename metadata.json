@@ -1,0 +1,6 @@
+{
+  "name": "CRAFT N SOFA Admin",
+  "description": "Product and inventory management backend for CRAFT N SOFA furniture store.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
