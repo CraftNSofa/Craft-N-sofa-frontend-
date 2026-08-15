@@ -9,3 +9,18 @@
 
 /* Compact monochrome admin login */
 .login-page{align-items:center;background:#f3f3f1;display:grid;min-height:100vh;padding:24px}.login-card{border:1px solid #e2e2de;border-radius:22px;box-shadow:0 18px 55px #1111110d;max-width:460px;padding:44px 42px;width:100%}.login-visual{display:none}.login-card .brand-mark.large{border-radius:50%;height:58px;margin:0 auto 18px;width:58px}.login-card .eyebrow{text-align:center}.login-card h1{font-size:35px;line-height:1.08;margin:18px 0 12px;text-align:center}.login-card h1 i{color:#111;font-style:italic}.login-card>p{color:#777;font-size:12px;line-height:1.6;margin:0 auto 28px;max-width:310px;text-align:center}.login-form{display:grid;gap:15px}.login-form label{color:#333;font-size:11px;font-weight:600}.login-form input{background:#fff;border:1px solid #d8d8d4;border-radius:9px;color:#111;display:block;margin-top:7px;padding:13px;width:100%}.login-form input:focus{border-color:#111;box-shadow:0 0 0 3px #11111112;outline:none}.login-form .primary-button{border-radius:9px;justify-content:center;margin-top:4px;padding:14px}.demo-note{align-items:center;color:#777;display:flex;gap:6px;justify-content:center;margin-top:20px}.form-error{align-items:center;display:flex;gap:6px}@media(max-width:520px){.login-page{padding:15px}.login-card{border-radius:18px;padding:34px 24px}.login-card h1{font-size:30px}}
+
+/* Store branding settings */
+.branding-modal { width: min(520px, calc(100vw - 32px)); }
+.branding-preview { min-height: 150px; display: grid; place-items: center; margin: 20px 0 14px; border: 1px solid #e5e5e5; border-radius: 14px; background: #fafafa; overflow: hidden; }
+.branding-preview img { max-width: 78%; max-height: 120px; object-fit: contain; }
+.branding-placeholder { font-size: 46px; font-weight: 800; letter-spacing: -0.08em; color: #111; }
+.branding-placeholder span { color: #888; }
+.branding-dropzone { min-height: 112px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; border: 1px dashed #bdbdbd; border-radius: 12px; background: #fff; cursor: pointer; text-align: center; transition: border-color .2s, background .2s; }
+.branding-dropzone:hover { border-color: #111; background: #f7f7f7; }
+.branding-dropzone strong { font-size: 14px; }
+.branding-dropzone small { color: #777; font-size: 12px; }
+.branding-dropzone input { display: none; }
+.danger-button { border: 1px solid #d3d3d3; background: #fff; color: #a11; border-radius: 8px; padding: 10px 14px; font-weight: 700; cursor: pointer; }
+.danger-button:disabled, .primary-button:disabled { opacity: .55; cursor: not-allowed; }
+@media (max-width: 560px) { .branding-modal .modal-actions { flex-wrap: wrap; } .branding-modal .modal-actions button { flex: 1; } }

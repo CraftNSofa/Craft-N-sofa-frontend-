@@ -27,6 +27,41 @@ export async function loadCategories(): Promise<RemoteCategory[]> {
   return data ?? [];
 }
 
+export type StoreBranding = { id: string; logo_url: string | null; updated_at: string };
+
+export async function loadStoreBranding(): Promise<StoreBranding> {
+  const { data, error } = await supabase().from('store_settings').select('id,logo_url,updated_at').eq('id', 'default').maybeSingle();
+  if (error) throw error;
+  return data ?? { id: 'default', logo_url: null, updated_at: new Date(0).toISOString() };
+}
+
+export async function uploadStoreLogo(file: File, previousUrl?: string | null) {
+  const extension = file.name.split('.').pop()?.toLowerCase() || 'png';
+  const path = `branding/logo-${crypto.randomUUID()}.${extension}`;
+  const { error: uploadError } = await supabase().storage.from('brand-assets').upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+  if (uploadError) throw uploadError;
+  const { data: publicUrl } = supabase().storage.from('brand-assets').getPublicUrl(path);
+  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', logo_url: publicUrl.publicUrl, updated_at: new Date().toISOString() }).select('id,logo_url,updated_at').single();
+  if (error) throw error;
+  if (previousUrl) {
+    const marker = '/storage/v1/object/public/brand-assets/';
+    const previousPath = previousUrl.includes(marker) ? previousUrl.split(marker)[1] : null;
+    if (previousPath) await supabase().storage.from('brand-assets').remove([previousPath]);
+  }
+  return data as StoreBranding;
+}
+
+export async function clearStoreLogo(previousUrl?: string | null) {
+  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', logo_url: null, updated_at: new Date().toISOString() }).select('id,logo_url,updated_at').single();
+  if (error) throw error;
+  if (previousUrl) {
+    const marker = '/storage/v1/object/public/brand-assets/';
+    const previousPath = previousUrl.includes(marker) ? previousUrl.split(marker)[1] : null;
+    if (previousPath) await supabase().storage.from('brand-assets').remove([previousPath]);
+  }
+  return data as StoreBranding;
+}
+
 const slugify = (value: string) => value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80) || `category-${Date.now()}`;
 
 export async function upsertCategory(category: Pick<RemoteCategory, 'name' | 'description' | 'active'> & { id?: string; sort_order?: number }) {
