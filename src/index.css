@@ -24,3 +24,20 @@
 .danger-button { border: 1px solid #d3d3d3; background: #fff; color: #a11; border-radius: 8px; padding: 10px 14px; font-weight: 700; cursor: pointer; }
 .danger-button:disabled, .primary-button:disabled { opacity: .55; cursor: not-allowed; }
 @media (max-width: 560px) { .branding-modal .modal-actions { flex-wrap: wrap; } .branding-modal .modal-actions button { flex: 1; } }
+
+.settings-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, .85fr); gap: 16px; max-width: 980px; }
+.settings-card { padding: 24px; }
+.settings-card .panel-heading h3 { margin-top: 8px; font-size: 18px; }
+.settings-card .panel-heading p { font-size: 11px; margin-top: 6px; }
+.settings-logo-preview { min-height: 190px; margin: 24px 0 18px; border: 1px solid #e6e6e2; border-radius: 12px; background: #fafafa; display: grid; place-items: center; overflow: hidden; }
+.settings-logo-preview img { max-width: 70%; max-height: 120px; width: auto; height: auto; object-fit: contain; }
+.settings-card-actions { display: flex; gap: 9px; flex-wrap: wrap; }
+.settings-help { color: #999; display: block; font-size: 10px; margin-top: 14px; }
+.settings-info h3 { font-size: 18px; margin: 8px 0 24px; }
+.settings-location { align-items: center; border-top: 1px solid #eee; display: flex; gap: 12px; padding: 16px 0; }
+.settings-location > span { color: #999; font-size: 10px; font-weight: 700; }
+.settings-location b, .settings-location small { display: block; }
+.settings-location b { font-size: 12px; }
+.settings-location small { color: #999; font-size: 10px; margin-top: 4px; }
+.settings-info > .secondary-button { margin-top: 18px; text-decoration: none; }
+@media (max-width: 760px) { .settings-grid { grid-template-columns: 1fr; } }
