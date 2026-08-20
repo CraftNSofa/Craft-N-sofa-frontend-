@@ -63,3 +63,16 @@
   .store-right .store-nav.open { display: flex; }
   .store-right .store-nav > a, .store-right .category-menu summary { border-bottom: 1px solid #eeeeee; padding: 14px 4px; }
 }
+
+/* Final logo sizing and spacing */
+@media (min-width: 801px) {
+  .store-header { padding: 0 40px; }
+  .store-header-top { grid-template-columns: 190px minmax(300px, 1fr) minmax(520px, auto); min-height: 88px; }
+  .store-logo { padding-left: 8px; }
+  .store-logo img { max-width: 190px; max-height: 66px; }
+}
+@media (max-width: 800px) {
+  .store-header { padding: 0 22px; }
+  .store-logo { padding-left: 4px; }
+  .store-logo img { max-width: 165px; max-height: 58px; }
+}
