@@ -1,9 +1,10 @@
 import type { AuthResponse, User } from '@supabase/supabase-js';
-import type { Product, Tag } from '../types';
+import type { Banner, Product, Tag } from '../types';
 import { getSupabaseClient } from '../config/supabase';
 
 export type RemoteCategory = { id: string; name: string; description: string | null; active: boolean; sort_order: number };
 export type RemoteTag = Tag & { description: string | null; created_at?: string; updated_at?: string };
+export type RemoteBanner = Banner;
 export type RemoteOrder = { id: string; order_number: string; customer_name: string; customer_email: string | null; shipping_address: Record<string, unknown>; status: string; payment_status: string; total: number; created_at: string; order_items?: Array<{ quantity: number; selling_price: number; cost_price: number }> };
 export type RemoteExpense = { id: string; title: string; category: string; amount: number; expense_date: string };
 
@@ -20,6 +21,39 @@ export async function signOutAdmin() {
 export async function getCurrentUser(): Promise<User | null> {
   const { data } = await supabase().auth.getUser();
   return data.user ?? null;
+}
+
+export async function loadBanners(): Promise<RemoteBanner[]> {
+  const { data, error } = await supabase().from('store_banners').select('id,image_url,alt_text,active,sort_order,created_at,updated_at').order('sort_order').order('created_at');
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function uploadStoreBanner(file: File, altText = 'Craft N Sofa collection') {
+  const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+  const path = `banners/banner-${crypto.randomUUID()}.${extension}`;
+  const { error: uploadError } = await supabase().storage.from('brand-assets').upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+  if (uploadError) throw uploadError;
+  const { data: publicUrl } = supabase().storage.from('brand-assets').getPublicUrl(path);
+  const { data, error } = await supabase().from('store_banners').insert({ image_url: publicUrl.publicUrl, alt_text: altText.trim() || 'Craft N Sofa collection', sort_order: 0, active: true }).select('id,image_url,alt_text,active,sort_order,created_at,updated_at').single();
+  if (error) throw error;
+  return data as RemoteBanner;
+}
+
+export async function updateStoreBanner(id: string, changes: Partial<Pick<RemoteBanner, 'alt_text' | 'active' | 'sort_order'>>) {
+  const { data, error } = await supabase().from('store_banners').update(changes).eq('id', id).select('id,image_url,alt_text,active,sort_order,created_at,updated_at').single();
+  if (error) throw error;
+  return data as RemoteBanner;
+}
+
+export async function deleteStoreBanner(id: string, imageUrl?: string | null) {
+  const { error } = await supabase().from('store_banners').delete().eq('id', id);
+  if (error) throw error;
+  if (imageUrl) {
+    const marker = '/storage/v1/object/public/brand-assets/';
+    const path = imageUrl.includes(marker) ? imageUrl.split(marker)[1] : null;
+    if (path) await supabase().storage.from('brand-assets').remove([path]);
+  }
 }
 
 export async function loadCategories(): Promise<RemoteCategory[]> {

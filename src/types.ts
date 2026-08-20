@@ -22,6 +22,16 @@ export interface Product {
   updated_at?: string;
 }
 
+export interface Banner {
+  id: string;
+  image_url: string;
+  alt_text: string;
+  active: boolean;
+  sort_order: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface Tag {
   id: string;
   name: string;
