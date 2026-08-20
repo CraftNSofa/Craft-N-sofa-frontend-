@@ -2,7 +2,7 @@ import type { AuthResponse, User } from '@supabase/supabase-js';
 import type { Banner, Product, Tag } from '../types';
 import { getSupabaseClient } from '../config/supabase';
 
-export type RemoteCategory = { id: string; name: string; description: string | null; active: boolean; sort_order: number };
+export type RemoteCategory = { id: string; name: string; description: string | null; active: boolean; sort_order: number; slug?: string; image_url?: string | null; parent_id?: string | null };
 export type RemoteTag = Tag & { description: string | null; created_at?: string; updated_at?: string };
 export type RemoteBanner = Banner;
 export type RemoteOrder = { id: string; order_number: string; customer_name: string; customer_email: string | null; shipping_address: Record<string, unknown>; status: string; payment_status: string; total: number; created_at: string; order_items?: Array<{ quantity: number; selling_price: number; cost_price: number }> };
@@ -57,7 +57,7 @@ export async function deleteStoreBanner(id: string, imageUrl?: string | null) {
 }
 
 export async function loadCategories(): Promise<RemoteCategory[]> {
-  const { data, error } = await supabase().from('categories').select('id,name,description,active,sort_order').order('sort_order');
+  const { data, error } = await supabase().from('categories').select('id,name,slug,description,active,sort_order,image_url,parent_id').order('sort_order');
   if (error) throw error;
   return data ?? [];
 }
@@ -99,18 +99,29 @@ export async function clearStoreLogo(previousUrl?: string | null) {
 
 const slugify = (value: string) => value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80) || `category-${Date.now()}`;
 
-export async function upsertCategory(category: Pick<RemoteCategory, 'name' | 'description' | 'active'> & { id?: string; sort_order?: number }) {
+export async function upsertCategory(category: Pick<RemoteCategory, 'name' | 'description' | 'active'> & { id?: string; sort_order?: number; image_url?: string | null; parent_id?: string | null }) {
   const payload = {
     name: category.name.trim(),
     slug: slugify(category.name),
     description: category.description?.trim() || null,
     active: category.active,
     sort_order: category.sort_order ?? 0,
+    image_url: category.image_url ?? null,
+    parent_id: category.parent_id ?? null,
   };
-  const request = category.id ? supabase().from('categories').update(payload).eq('id', category.id).select('id,name,description,active,sort_order').single() : supabase().from('categories').insert(payload).select('id,name,description,active,sort_order').single();
+  const fields = 'id,name,slug,description,active,sort_order,image_url,parent_id';
+  const request = category.id ? supabase().from('categories').update(payload).eq('id', category.id).select(fields).single() : supabase().from('categories').insert(payload).select(fields).single();
   const { data, error } = await request;
   if (error) throw error;
   return data as RemoteCategory;
+}
+
+export async function uploadCategoryImage(file: File) {
+  const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+  const path = `categories/category-${crypto.randomUUID()}.${extension}`;
+  const { error } = await supabase().storage.from('brand-assets').upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+  if (error) throw error;
+  return supabase().storage.from('brand-assets').getPublicUrl(path).data.publicUrl;
 }
 
 export async function deleteCategory(id: string) {
