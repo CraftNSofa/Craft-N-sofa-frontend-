@@ -14,11 +14,19 @@ export interface Product {
   image_url: string;
   images: string[];
   colors: string[];
+  tags?: string[];
   stock: number;
   featured: boolean;
   variants?: ProductVariant[] | Record<string, any>;
   created_at?: string;
   updated_at?: string;
+}
+
+export interface Tag {
+  id: string;
+  name: string;
+  description: string;
+  active: boolean;
 }
 
 export interface SupabaseConfig {
