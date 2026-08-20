@@ -41,3 +41,26 @@
 .settings-location small { color: #999; font-size: 10px; margin-top: 4px; }
 .settings-info > .secondary-button { margin-top: 18px; text-decoration: none; }
 @media (max-width: 760px) { .settings-grid { grid-template-columns: 1fr; } }
+
+/* Centered admin login with saved store branding */
+.login-page { align-items: center; background: #f3f4f2; display: flex; justify-content: center; min-height: 100vh; padding: 32px 20px; }
+.login-card { background: #fff; border: 1px solid #e1e1df; border-radius: 26px; box-shadow: 0 18px 50px rgba(20,20,20,.08); margin: 0 auto; max-width: 560px; padding: 46px 52px 40px; text-align: center; width: min(100%, 560px); }
+.login-logo-wrap { align-items: center; display: flex; height: 96px; justify-content: center; margin: 0 auto 14px; }
+.login-logo { display: block; height: 88px; max-width: 260px; object-fit: contain; width: auto; }
+.login-card .eyebrow { letter-spacing: .24em; margin-bottom: 18px; }
+.login-card h1 { font-size: clamp(2rem, 4vw, 2.8rem); line-height: 1.05; margin: 0 auto 14px; }
+.login-card > p { color: #777873; line-height: 1.55; margin: 0 auto 28px; max-width: 360px; }
+.login-card .login-form { margin: 0 auto; max-width: 410px; text-align: left; }
+.login-card .login-form label { display: block; font-size: .78rem; font-weight: 650; margin-bottom: 16px; }
+.login-card .login-form input { background: #fff; border: 1px solid #d9d9d5; border-radius: 10px; display: block; font-size: .95rem; margin-top: 8px; padding: 14px 15px; width: 100%; }
+.login-card .login-form input:focus { border-color: #111; box-shadow: 0 0 0 3px rgba(17,17,17,.08); outline: none; }
+.login-card .primary-button.full { justify-content: center; margin-top: 6px; width: 100%; }
+.login-card .demo-note { align-items: center; color: #92928e; display: inline-flex; gap: 6px; justify-content: center; margin-top: 22px; }
+.login-visual { display: none; }
+@media (max-width: 560px) {
+  .login-page { padding: 18px 14px; }
+  .login-card { border-radius: 22px; padding: 32px 22px 28px; }
+  .login-logo-wrap { height: 78px; }
+  .login-logo { height: 72px; max-width: 220px; }
+  .login-card h1 { font-size: 2rem; }
+}

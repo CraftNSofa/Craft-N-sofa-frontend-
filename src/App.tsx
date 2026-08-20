@@ -195,6 +195,8 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  useEffect(() => { loadStoreBranding().then(branding => setLogoUrl(branding.logo_url)).catch(() => undefined); }, []);
   const submit = async (event: FormEvent) => {
     event.preventDefault(); setError(''); setBusy(true);
     const { error: authError } = await signInAdmin(email, password);
@@ -202,7 +204,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
     if (authError) { setError(authError.message); return; }
     onLogin();
   };
-  return <div className="login-page"><div className="login-card"><div className="brand-mark large">C<span>•</span>S</div><div className="eyebrow">CRAFT N SOFA</div><h1>Welcome to your<br /><i>store workspace.</i></h1><p>Sign in with your authorised admin account to manage the store.</p><form onSubmit={submit} className="login-form"><label>Admin email<input type="email" value={email} onChange={event => setEmail(event.target.value)} required autoComplete="email" placeholder="you@example.com" /></label><label>Password<input type="password" value={password} onChange={event => setPassword(event.target.value)} required autoComplete="current-password" placeholder="Your password" /></label>{error && <small className="form-error"><AlertCircle size={13} /> {error}</small>}<button className="primary-button full" disabled={busy}>{busy ? 'Signing in…' : 'Enter admin workspace'} <ArrowUpRight size={17} /></button></form><small className="demo-note"><Database size={13} /> Secure access is managed by Supabase Auth.</small></div><div className="login-visual"><div className="visual-copy"><span>CRAFTED FOR LIVING</span><h2>Good spaces<br />start here.</h2></div></div></div>;
+  return <div className="login-page"><div className="login-card"><div className="login-logo-wrap">{logoUrl ? <img src={logoUrl} alt="Craft N Sofa" className="login-logo" /> : <div className="brand-mark large">C<span>•</span>S</div>}</div><div className="eyebrow">CRAFT N SOFA</div><h1>Welcome to your<br /><i>store workspace.</i></h1><p>Sign in with your authorised admin account to manage the store.</p><form onSubmit={submit} className="login-form"><label>Admin email<input type="email" value={email} onChange={event => setEmail(event.target.value)} required autoComplete="email" placeholder="you@example.com" /></label><label>Password<input type="password" value={password} onChange={event => setPassword(event.target.value)} required autoComplete="current-password" placeholder="Your password" /></label>{error && <small className="form-error"><AlertCircle size={13} /> {error}</small>}<button className="primary-button full" disabled={busy}>{busy ? 'Signing in…' : 'Enter admin workspace'} <ArrowUpRight size={17} /></button></form><small className="demo-note"><Database size={13} /> Secure access is managed by Supabase Auth.</small></div></div>;
 }
 
 function Overview({ revenue, grossProfit, netProfit, orders, lowStock, expenseTotal, onOrders, onProducts }: { revenue: number; grossProfit: number; netProfit: number; orders: Order[]; lowStock: number; expenseTotal: number; onOrders: () => void; onProducts: () => void }) {
