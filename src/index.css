@@ -109,3 +109,16 @@
 @media (max-width: 800px) { .banner-admin-grid { grid-template-columns: 1fr; } .banner-admin-meta { align-items: flex-start; flex-direction: column; } }
 
 .product-tag-badges{position:absolute;top:10px;left:10px;right:10px;display:flex;flex-wrap:wrap;gap:5px;z-index:2}.product-tag-badges .stock-badge{position:static;display:inline-flex;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Image-backed category management */
+.category-form-layout { display: grid; grid-template-columns: 180px 1fr; gap: 24px; align-items: start; margin: 18px 0 22px; }
+.category-image-picker { min-height: 180px; border: 1px dashed #cfcfcf; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; overflow: hidden; background: #fafafa; color: #777; text-align: center; }
+.category-image-picker img { width: 100%; height: 180px; object-fit: cover; }
+.category-image-picker b { color: #222; font-size: 13px; }
+.category-image-picker small { font-size: 10px; }
+.category-form-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.category-form-fields label:last-child { grid-column: 1 / -1; }
+.category-form-fields label span { color: #b42318; }
+.category-form-fields textarea { min-height: 82px; }
+.category-row-thumb { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; flex: 0 0 auto; }
+@media (max-width: 640px) { .category-form-layout { grid-template-columns: 1fr; } .category-form-fields { grid-template-columns: 1fr; } .category-form-fields label:last-child { grid-column: auto; } }
