@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
-import { ArrowRight, Check, Menu, Minus, Plus, ShoppingBag, X } from 'lucide-react';
+import { ArrowRight, Check, ChevronDown, Menu, Minus, Plus, Search, ShoppingBag, UserRound, X } from 'lucide-react';
 import type { Product } from './types';
 import { createStorefrontOrder, loadCategories, loadProducts, loadStoreBranding, subscribeToCatalogue, type RemoteCategory } from './lib/commerce';
 import './storefront.css';
@@ -12,6 +12,7 @@ export default function Storefront() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<RemoteCategory[]>([]);
   const [activeCategory, setActiveCategory] = useState('All pieces');
+  const [searchTerm, setSearchTerm] = useState('');
   const [cart, setCart] = useState<CartLine[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
@@ -36,14 +37,18 @@ export default function Storefront() {
     return () => { active = false; void channel.unsubscribe(); };
   }, []);
 
-  const filtered = useMemo(() => activeCategory === 'All pieces' ? products : products.filter(product => product.category === activeCategory), [activeCategory, products]);
+  const filtered = useMemo(() => {
+    const categoryProducts = activeCategory === 'All pieces' ? products : products.filter(product => product.category === activeCategory);
+    const query = searchTerm.trim().toLowerCase();
+    return query ? categoryProducts.filter(product => `${product.name} ${product.category}`.toLowerCase().includes(query)) : categoryProducts;
+  }, [activeCategory, products, searchTerm]);
   const total = cart.reduce((sum, line) => sum + line.quantity * (line.product.discount_price || line.product.price), 0);
   const add = (product: Product) => { setCart(current => { const existing = current.find(line => line.product.id === product.id); return existing ? current.map(line => line.product.id === product.id ? { ...line, quantity: line.quantity + 1 } : line) : [...current, { product, quantity: 1 }]; }); setCartOpen(true); };
   const adjust = (id: string | number | undefined, amount: number) => setCart(current => current.flatMap(line => line.product.id === id ? (line.quantity + amount > 0 ? [{ ...line, quantity: line.quantity + amount }] : []) : [line]));
   const submitOrder = async (event: FormEvent) => { event.preventDefault(); if (!cart.length) return; await createStorefrontOrder({ customerName: form.name, customerEmail: form.email, address: { city: form.city, address: form.address }, items: cart.map(line => ({ productId: Number(line.product.id), name: line.product.name, quantity: line.quantity, sellingPrice: line.product.discount_price || line.product.price, costPrice: Number((line.product as Product & { cost_price?: number }).cost_price || 0) })) }); setCart([]); setCheckoutOpen(false); setSuccess(true); };
 
-  return <div className="storefront">
-    <header className="store-header"><a className="store-logo" href="/">{logoUrl ? <img src={logoUrl} alt="Craft N Sofa" /> : <><span>C</span>RAFT N SOFA</>}</a><nav className={menuOpen ? 'store-nav open' : 'store-nav'}><a href="#collection" onClick={() => { setActiveCategory('All pieces'); setMenuOpen(false); }}>Collection</a>{categories.slice(0, 5).map(category => <a href="#collection" key={category.id} onClick={() => { setActiveCategory(category.name); setMenuOpen(false); }}>{category.name}</a>)}<a href="#story" onClick={() => setMenuOpen(false)}>Our story</a><a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a></nav><button className="store-cart" onClick={() => setCartOpen(true)}><ShoppingBag size={18} /><span>{cart.reduce((sum, line) => sum + line.quantity, 0)}</span></button><button className="store-menu" onClick={() => setMenuOpen(!menuOpen)}><Menu size={21} /></button></header>
+  return <div className="storefront" id="top">
+    <header className="store-header"><div className="store-header-top"><a className="store-logo" href="/">{logoUrl ? <img src={logoUrl} alt="Craft N Sofa" /> : <><span>C</span>RAFT N SOFA</>}</a><label className="store-search"><Search size={15} /><input aria-label="Search products" placeholder="Search for products, brands and more..." value={searchTerm} onChange={event => setSearchTerm(event.target.value)} /></label><div className="store-actions"><button className="store-cart" aria-label="Open shopping bag" onClick={() => setCartOpen(true)}><ShoppingBag size={18} /><span>{cart.reduce((sum, line) => sum + line.quantity, 0)}</span></button><button className="store-account" aria-label="Account"><UserRound size={18} /><ChevronDown size={14} /></button><button className="store-menu" aria-label="Open menu" onClick={() => setMenuOpen(!menuOpen)}><Menu size={22} /></button></div></div><nav className={menuOpen ? 'store-nav open' : 'store-nav'}><a href="#top" onClick={() => setMenuOpen(false)}>Home</a><a href="#collection" onClick={() => { setActiveCategory('All pieces'); setMenuOpen(false); }}>Products</a><details className="category-menu"><summary>Category <ChevronDown size={12} /></summary><div>{categories.map(category => <a href="#collection" key={category.id} onClick={() => { setActiveCategory(category.name); setMenuOpen(false); }}>{category.name}</a>)}</div></details><a href="#contact" onClick={() => setMenuOpen(false)}>Contact Us</a></nav></header>
     <main>
       <section className="store-hero"><div className="hero-copy"><span className="store-kicker">CRAFTED FOR SLOW LIVING</span><h1>Make room for<br /><em>good living.</em></h1><p>Hand-finished sofas and considered pieces made for the everyday moments that matter.</p><a className="store-button dark" href="#collection">Explore collection <ArrowRight size={16} /></a></div><div className="hero-art"><div className="hero-art-label">01 <span>CRAFT N SOFA</span></div></div></section>
       <section className="store-intro" id="story"><span className="store-kicker">THE CRAFT N SOFA WAY</span><h2>Quietly beautiful.<br /><em>Made to stay.</em></h2><p>We believe the best furniture does not ask for attention. It gives your home a feeling of ease, warmth and belonging.</p></section>
