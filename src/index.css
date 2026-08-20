@@ -64,3 +64,21 @@
   .login-logo { height: 72px; max-width: 220px; }
   .login-card h1 { font-size: 2rem; }
 }
+
+/* Keep the desktop admin login fully inside the viewport without page scrolling */
+@media (min-width: 561px) {
+  .login-page { box-sizing: border-box; height: 100dvh; min-height: 100dvh; overflow: hidden; padding: 16px 20px; }
+  .login-card { padding: 24px 40px 22px; }
+  .login-logo-wrap { height: 76px; margin-bottom: 8px; }
+  .login-logo { height: 68px; }
+  .login-card .eyebrow { margin-bottom: 10px; }
+  .login-card h1 { font-size: clamp(1.9rem, 3.2vw, 2.35rem); margin-bottom: 10px; }
+  .login-card > p { margin-bottom: 18px; }
+  .login-card .login-form label { margin-bottom: 10px; }
+  .login-card .login-form input { padding: 11px 13px; }
+  .login-card .primary-button.full { margin-top: 2px; }
+  .login-card .demo-note { margin-top: 14px; }
+}
+@media (max-width: 560px) {
+  .login-page { min-height: 100dvh; overflow-x: hidden; overflow-y: auto; }
+}
