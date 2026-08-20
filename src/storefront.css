@@ -88,3 +88,7 @@
 .store-banner-empty h1 { margin: 0; font-size: clamp(2rem, 5vw, 4.8rem); font-weight: 400; letter-spacing: -.06em; }
 .store-banner-empty h1 em { font-family: Georgia, serif; }
 @media (max-width: 700px) { .store-banner-carousel { aspect-ratio: 1.65 / 1; min-height: 230px; } .store-carousel-controls { bottom: 14px; } }
+
+.store-banner-empty { padding: 32px; }
+.store-banner-empty h1 { max-width: 760px; font-size: clamp(2rem, 5vw, 4.5rem); }
+.store-banner-empty p { margin: 0; color: #706d67; font-size: 14px; letter-spacing: .01em; }
