@@ -34,7 +34,7 @@ export default function Storefront() {
       if (productResult.status === 'fulfilled') setProducts(productResult.value);
       if (categoryResult.status === 'fulfilled') setCategories(categoryResult.value);
       if (brandingResult.status === 'fulfilled') { setLogoUrl(brandingResult.value.logo_url); setStoreContent({ custom_html: brandingResult.value.custom_html || '', custom_css: brandingResult.value.custom_css || '', secondary_image_url: brandingResult.value.secondary_image_url || null }); setPromoCards((brandingResult.value.promo_cards || []).sort((a, b) => a.sort_order - b.sort_order)); }
-      if (bannerResult.status === 'fulfilled') { setBanners(bannerResult.value.filter(banner => banner.active)); setActiveBanner(0); }
+      if (bannerResult.status === 'fulfilled') { setBanners(bannerResult.value); setActiveBanner(0); }
       setLoading(false);
     };
     void refreshCatalogue();
