@@ -62,45 +62,59 @@ export async function loadCategories(): Promise<RemoteCategory[]> {
   return data ?? [];
 }
 
-export type StoreBranding = { id: string; logo_url: string | null; custom_html: string; custom_css: string; secondary_image_url: string | null; promo_cards: PromoCard[]; updated_at: string };
+export type StoreContentBlock = { id: string; title: string; html: string; css: string; image_url: string | null; image_title: string; active: boolean; sort_order: number; created_at?: string; updated_at?: string };
+export type StoreBranding = { id: string; logo_url: string | null; custom_html: string; custom_css: string; secondary_image_url: string | null; secondary_image_title: string; content_blocks: StoreContentBlock[]; promo_cards: PromoCard[]; updated_at: string };
+
+const defaultStoreBranding = (): StoreBranding => ({ id: 'default', logo_url: null, custom_html: '', custom_css: '', secondary_image_url: null, secondary_image_title: 'Craft N Sofa collection', content_blocks: [], promo_cards: [], updated_at: new Date(0).toISOString() });
+const normalizeStoreBranding = (data: Record<string, unknown> | null): StoreBranding => {
+  if (!data) return defaultStoreBranding();
+  const storedBlocks = Array.isArray(data.content_blocks) ? data.content_blocks as StoreContentBlock[] : [];
+  const legacyBlock: StoreContentBlock[] = storedBlocks.length || !String(data.custom_html || '').trim() ? [] : [{ id: 'legacy-custom-content', title: 'Homepage block', html: String(data.custom_html || ''), css: String(data.custom_css || ''), image_url: null, image_title: '', active: true, sort_order: 0 }];
+  return { ...defaultStoreBranding(), ...data, secondary_image_title: String(data.secondary_image_title || 'Craft N Sofa collection'), content_blocks: storedBlocks.length ? storedBlocks : legacyBlock, promo_cards: Array.isArray(data.promo_cards) ? data.promo_cards as PromoCard[] : [] } as StoreBranding;
+};
 
 export async function loadStoreBranding(): Promise<StoreBranding> {
-  const { data, error } = await supabase().from('store_settings').select('id,logo_url,custom_html,custom_css,secondary_image_url,promo_cards,updated_at').eq('id', 'default').maybeSingle();
+  const { data, error } = await supabase().from('store_settings').select(brandingFields).eq('id', 'default').maybeSingle();
   if (error) throw error;
-  return data ? { ...data, promo_cards: Array.isArray(data.promo_cards) ? data.promo_cards as PromoCard[] : [] } as StoreBranding : { id: 'default', logo_url: null, custom_html: '', custom_css: '', secondary_image_url: null, promo_cards: [], updated_at: new Date(0).toISOString() };
+  return normalizeStoreBranding(data as Record<string, unknown> | null);
 }
 
-export async function saveStoreContent(content: { custom_html: string; custom_css: string }) {
-  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', custom_html: content.custom_html, custom_css: content.custom_css, updated_at: new Date().toISOString() }).select('id,logo_url,custom_html,custom_css,secondary_image_url,updated_at').single();
+export async function saveStoreContent(content: { custom_html: string; custom_css: string; secondary_image_title: string; content_blocks: StoreContentBlock[] }) {
+  const normalizedBlocks = content.content_blocks.map((block, index) => ({ ...block, sort_order: index }));
+  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', custom_html: content.custom_html, custom_css: content.custom_css, secondary_image_title: content.secondary_image_title.trim() || 'Craft N Sofa collection', content_blocks: normalizedBlocks, updated_at: new Date().toISOString() }).select(brandingFields).single();
   if (error) throw error;
-  return data as StoreBranding;
+  return normalizeStoreBranding(data as Record<string, unknown>);
 }
 
-export async function uploadSecondaryStoreImage(file: File, previousUrl?: string | null) {
+export async function uploadStoreContentImage(file: File, previousUrl?: string | null) {
   const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-  const path = `store-content/secondary-${crypto.randomUUID()}.${extension}`;
+  const path = `store-content/asset-${crypto.randomUUID()}.${extension}`;
   const { error: uploadError } = await supabase().storage.from('brand-assets').upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type });
   if (uploadError) throw uploadError;
   const { data: publicUrl } = supabase().storage.from('brand-assets').getPublicUrl(path);
-  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', secondary_image_url: publicUrl.publicUrl, updated_at: new Date().toISOString() }).select('id,logo_url,custom_html,custom_css,secondary_image_url,updated_at').single();
+  if (previousUrl) await deleteStoreContentImage(previousUrl);
+  return publicUrl.publicUrl;
+}
+
+export async function deleteStoreContentImage(imageUrl?: string | null) {
+  if (!imageUrl) return;
+  const marker = '/storage/v1/object/public/brand-assets/';
+  const imagePath = imageUrl.includes(marker) ? imageUrl.split(marker)[1] : null;
+  if (imagePath) await supabase().storage.from('brand-assets').remove([imagePath]);
+}
+
+export async function uploadSecondaryStoreImage(file: File, previousUrl?: string | null, title = 'Craft N Sofa collection') {
+  const publicUrl = await uploadStoreContentImage(file, previousUrl);
+  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', secondary_image_url: publicUrl, secondary_image_title: title.trim() || 'Craft N Sofa collection', updated_at: new Date().toISOString() }).select(brandingFields).single();
   if (error) throw error;
-  if (previousUrl) {
-    const marker = '/storage/v1/object/public/brand-assets/';
-    const previousPath = previousUrl.includes(marker) ? previousUrl.split(marker)[1] : null;
-    if (previousPath) await supabase().storage.from('brand-assets').remove([previousPath]);
-  }
-  return data as StoreBranding;
+  return normalizeStoreBranding(data as Record<string, unknown>);
 }
 
 export async function clearSecondaryStoreImage(previousUrl?: string | null) {
-  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', secondary_image_url: null, updated_at: new Date().toISOString() }).select('id,logo_url,custom_html,custom_css,secondary_image_url,updated_at').single();
+  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', secondary_image_url: null, updated_at: new Date().toISOString() }).select(brandingFields).single();
   if (error) throw error;
-  if (previousUrl) {
-    const marker = '/storage/v1/object/public/brand-assets/';
-    const previousPath = previousUrl.includes(marker) ? previousUrl.split(marker)[1] : null;
-    if (previousPath) await supabase().storage.from('brand-assets').remove([previousPath]);
-  }
-  return data as StoreBranding;
+  await deleteStoreContentImage(previousUrl);
+  return normalizeStoreBranding(data as Record<string, unknown>);
 }
 
 export async function uploadStoreLogo(file: File, previousUrl?: string | null) {
@@ -279,7 +293,7 @@ export async function createStorefrontOrder(input: { customerName: string; custo
 }
 
 
-const brandingFields = 'id,logo_url,custom_html,custom_css,secondary_image_url,promo_cards,updated_at';
+const brandingFields = 'id,logo_url,custom_html,custom_css,secondary_image_url,secondary_image_title,content_blocks,promo_cards,updated_at';
 
 export async function savePromoCards(cards: PromoCard[]) {
   const normalized = cards.map((card, index) => ({ ...card, sort_order: index }));
