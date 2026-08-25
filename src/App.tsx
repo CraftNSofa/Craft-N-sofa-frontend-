@@ -321,7 +321,22 @@ function StoreContentManager({ content, onSaveContent, onUploadSecondary, onClea
     setSecondaryTitle(content.secondary_image_title || 'Craft N Sofa collection');
   }, [content.content_blocks, content.secondary_image_title]);
   const updateBlock = (changes: Partial<StoreContentBlock>) => { if (!selectedId) return; setBlocks(current => current.map(block => block.id === selectedId ? { ...block, ...changes } : block)); };
-  const addBlock = () => { const block: StoreContentBlock = { id: `block-${uid()}`, title: `New block ${blocks.length + 1}`, html: '<section class="content-section">\n  <h2>Your heading</h2>\n  <p>Write your storefront message here.</p>\n</section>', css: '.content-section { padding: 48px 28px; text-align: center; }', image_url: null, image_title: '', active: true, sort_order: blocks.length }; setBlocks(current => [...current, block]); setSelectedId(block.id); };
+  const addBlock = () => { const block: StoreContentBlock = { id: `block-${uid()}`, title: 'Shop By Category', html: `<section class="category-block" aria-label="Shop by category">
+  <span class="category-block-kicker">SHOP BY CATEGORY</span>
+  <h2>Find your next piece.</h2>
+  <div class="category-block-grid">
+    <article class="category-block-card"><img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=85" alt="Sofas" /><span>Living Room</span></article>
+    <article class="category-block-card"><img src="https://images.unsplash.com/photo-1540574163026-643ea20ade25?auto=format&fit=crop&w=600&q=85" alt="Seating" /><span>Seating</span></article>
+    <article class="category-block-card"><img src="https://images.unsplash.com/photo-1550226891-ef816aed4a98?auto=format&fit=crop&w=600&q=85" alt="Bedroom" /><span>Bedroom</span></article>
+  </div>
+</section>`, css: `.category-block { background: #f5f4f1; padding: 48px 20px; text-align: center; }
+.category-block-kicker { color: #777; display: block; font-size: 10px; letter-spacing: .22em; margin-bottom: 14px; }
+.category-block h2 { color: #141414; font-family: Georgia, serif; font-size: clamp(30px, 4vw, 48px); font-weight: 500; margin: 0 0 26px; }
+.category-block-grid { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: auto; max-width: 936px; }
+.category-block-card { background: #ddd9d1; border-radius: 12px; color: #fff; display: block; min-width: 0; overflow: hidden; position: relative; text-align: left; }
+.category-block-card img { display: block; height: 300px; max-width: 100%; object-fit: cover; width: 300px; }
+.category-block-card span { background: linear-gradient(180deg, transparent, #111c); bottom: 0; color: #fff; font-size: 16px; font-weight: 700; left: 0; padding: 50px 18px 18px; position: absolute; right: 0; }
+@media (max-width: 720px) { .category-block-grid { grid-template-columns: 1fr; max-width: 300px; } .category-block-card img { height: auto; width: 100%; } }`, image_url: null, image_title: '', active: true, sort_order: blocks.length }; setBlocks(current => [...current, block]); setSelectedId(block.id); };
   const removeBlock = () => { if (!selectedId) return; const index = blocks.findIndex(block => block.id === selectedId); const next = blocks.filter(block => block.id !== selectedId); setBlocks(next); setSelectedId(next[Math.max(0, index - 1)]?.id || null); };
   const save = async () => { setBusy(true); try { await onSaveContent({ ...content, secondary_image_title: secondaryTitle, content_blocks: blocks.map((block, index) => ({ ...block, sort_order: index })) }); } finally { setBusy(false); } };
   const uploadBlockImage = async (file?: File) => { if (!file || !selected || !file.type.startsWith('image/') || file.size > 10 * 1024 * 1024) return; setBusy(true); try { const imageUrl = await onUploadBlockImage(file, selected.image_url); updateBlock({ image_url: imageUrl }); } finally { setBusy(false); } };
