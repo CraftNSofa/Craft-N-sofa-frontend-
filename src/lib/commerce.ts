@@ -1,5 +1,5 @@
 import type { AuthResponse, User } from '@supabase/supabase-js';
-import type { Banner, Product, Tag } from '../types';
+import type { Banner, Product, PromoCard, Tag } from '../types';
 import { getSupabaseClient } from '../config/supabase';
 
 export type RemoteCategory = { id: string; name: string; description: string | null; active: boolean; sort_order: number; slug?: string; image_url?: string | null; parent_id?: string | null };
@@ -62,12 +62,12 @@ export async function loadCategories(): Promise<RemoteCategory[]> {
   return data ?? [];
 }
 
-export type StoreBranding = { id: string; logo_url: string | null; custom_html: string; custom_css: string; secondary_image_url: string | null; updated_at: string };
+export type StoreBranding = { id: string; logo_url: string | null; custom_html: string; custom_css: string; secondary_image_url: string | null; promo_cards: PromoCard[]; updated_at: string };
 
 export async function loadStoreBranding(): Promise<StoreBranding> {
-  const { data, error } = await supabase().from('store_settings').select('id,logo_url,custom_html,custom_css,secondary_image_url,updated_at').eq('id', 'default').maybeSingle();
+  const { data, error } = await supabase().from('store_settings').select('id,logo_url,custom_html,custom_css,secondary_image_url,promo_cards,updated_at').eq('id', 'default').maybeSingle();
   if (error) throw error;
-  return data ?? { id: 'default', logo_url: null, custom_html: '', custom_css: '', secondary_image_url: null, updated_at: new Date(0).toISOString() };
+  return data ? { ...data, promo_cards: Array.isArray(data.promo_cards) ? data.promo_cards as PromoCard[] : [] } as StoreBranding : { id: 'default', logo_url: null, custom_html: '', custom_css: '', secondary_image_url: null, promo_cards: [], updated_at: new Date(0).toISOString() };
 }
 
 export async function saveStoreContent(content: { custom_html: string; custom_css: string }) {
@@ -276,4 +276,35 @@ export async function createStorefrontOrder(input: { customerName: string; custo
   const { error: itemsError } = await supabase().from('order_items').insert(input.items.map(item => ({ order_id: order.id, product_id: item.productId, product_name: item.name, quantity: item.quantity, selling_price: item.sellingPrice, cost_price: item.costPrice })));
   if (itemsError) throw itemsError;
   return order;
+}
+
+
+const brandingFields = 'id,logo_url,custom_html,custom_css,secondary_image_url,promo_cards,updated_at';
+
+export async function savePromoCards(cards: PromoCard[]) {
+  const normalized = cards.map((card, index) => ({ ...card, sort_order: index }));
+  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', promo_cards: normalized, updated_at: new Date().toISOString() }).select(brandingFields).single();
+  if (error) throw error;
+  return data as StoreBranding;
+}
+
+export async function uploadPromoCardImage(file: File, previousUrl?: string | null) {
+  const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+  const path = `store-content/promo-${crypto.randomUUID()}.${extension}`;
+  const { error: uploadError } = await supabase().storage.from('brand-assets').upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+  if (uploadError) throw uploadError;
+  const { data: publicUrl } = supabase().storage.from('brand-assets').getPublicUrl(path);
+  if (previousUrl) {
+    const marker = '/storage/v1/object/public/brand-assets/';
+    const previousPath = previousUrl.includes(marker) ? previousUrl.split(marker)[1] : null;
+    if (previousPath) await supabase().storage.from('brand-assets').remove([previousPath]);
+  }
+  return publicUrl.publicUrl;
+}
+
+export async function deletePromoCardImage(imageUrl?: string | null) {
+  if (!imageUrl) return;
+  const marker = '/storage/v1/object/public/brand-assets/';
+  const path = imageUrl.includes(marker) ? imageUrl.split(marker)[1] : null;
+  if (path) await supabase().storage.from('brand-assets').remove([path]);
 }

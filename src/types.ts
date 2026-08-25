@@ -32,6 +32,18 @@ export interface Banner {
   updated_at?: string;
 }
 
+export interface PromoCard {
+  id: string;
+  image_url: string;
+  eyebrow: string;
+  title: string;
+  link_category: string;
+  active: boolean;
+  sort_order: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface Tag {
   id: string;
   name: string;

@@ -92,3 +92,21 @@
 .store-banner-empty { padding: 32px; }
 .store-banner-empty h1 { max-width: 760px; font-size: clamp(2rem, 5vw, 4.5rem); }
 .store-banner-empty p { margin: 0; color: #706d67; font-size: 14px; letter-spacing: .01em; }
+
+/* Collection promotional cards */
+.promo-showcase { margin: 0 auto; max-width: 1320px; padding: 0 44px 130px; }
+.promo-showcase-heading { margin-bottom: 34px; }
+.promo-showcase-heading h2 { font-size: 46px; }
+.promo-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.promo-card { background: #d6d1c8; border: 0; cursor: pointer; height: 430px; overflow: hidden; padding: 0; position: relative; text-align: left; width: 100%; }
+.promo-card img { display: block; height: 100%; object-fit: cover; transition: transform .7s ease; width: 100%; }
+.promo-card:hover img { transform: scale(1.05); }
+.promo-card-shade { background: linear-gradient(180deg, transparent 25%, #111111aa 100%); inset: 0; position: absolute; }
+.promo-card-copy { bottom: 27px; color: #fff; display: flex; flex-direction: column; left: 27px; position: absolute; right: 27px; }
+.promo-card-copy .store-kicker { color: #e7e5df; font-size: 9px; }
+.promo-card-copy strong { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(25px, 2.5vw, 37px); font-weight: 500; letter-spacing: -.04em; line-height: 1.05; margin-top: 10px; max-width: 270px; }
+.promo-card-link { align-items: center; display: inline-flex; font-size: 11px; gap: 12px; margin-top: 20px; opacity: .9; }
+.promo-card-link svg { transition: transform .2s ease; }
+.promo-card:hover .promo-card-link svg { transform: translateX(4px); }
+@media (max-width: 800px) { .promo-showcase { padding: 0 22px 90px; } .promo-showcase-heading h2 { font-size: 37px; } .promo-card-grid { gap: 14px; } .promo-card { height: 330px; } .promo-card-copy { bottom: 20px; left: 19px; right: 19px; } .promo-card-copy strong { font-size: 24px; } .promo-card-link { font-size: 10px; gap: 8px; margin-top: 14px; } }
+@media (max-width: 560px) { .promo-card-grid { grid-template-columns: 1fr; } .promo-card { height: 340px; } .promo-card-copy strong { font-size: 31px; max-width: 310px; } }
