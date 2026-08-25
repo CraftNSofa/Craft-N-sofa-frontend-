@@ -62,12 +62,45 @@ export async function loadCategories(): Promise<RemoteCategory[]> {
   return data ?? [];
 }
 
-export type StoreBranding = { id: string; logo_url: string | null; updated_at: string };
+export type StoreBranding = { id: string; logo_url: string | null; custom_html: string; custom_css: string; secondary_image_url: string | null; updated_at: string };
 
 export async function loadStoreBranding(): Promise<StoreBranding> {
-  const { data, error } = await supabase().from('store_settings').select('id,logo_url,updated_at').eq('id', 'default').maybeSingle();
+  const { data, error } = await supabase().from('store_settings').select('id,logo_url,custom_html,custom_css,secondary_image_url,updated_at').eq('id', 'default').maybeSingle();
   if (error) throw error;
-  return data ?? { id: 'default', logo_url: null, updated_at: new Date(0).toISOString() };
+  return data ?? { id: 'default', logo_url: null, custom_html: '', custom_css: '', secondary_image_url: null, updated_at: new Date(0).toISOString() };
+}
+
+export async function saveStoreContent(content: { custom_html: string; custom_css: string }) {
+  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', custom_html: content.custom_html, custom_css: content.custom_css, updated_at: new Date().toISOString() }).select('id,logo_url,custom_html,custom_css,secondary_image_url,updated_at').single();
+  if (error) throw error;
+  return data as StoreBranding;
+}
+
+export async function uploadSecondaryStoreImage(file: File, previousUrl?: string | null) {
+  const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+  const path = `store-content/secondary-${crypto.randomUUID()}.${extension}`;
+  const { error: uploadError } = await supabase().storage.from('brand-assets').upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+  if (uploadError) throw uploadError;
+  const { data: publicUrl } = supabase().storage.from('brand-assets').getPublicUrl(path);
+  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', secondary_image_url: publicUrl.publicUrl, updated_at: new Date().toISOString() }).select('id,logo_url,custom_html,custom_css,secondary_image_url,updated_at').single();
+  if (error) throw error;
+  if (previousUrl) {
+    const marker = '/storage/v1/object/public/brand-assets/';
+    const previousPath = previousUrl.includes(marker) ? previousUrl.split(marker)[1] : null;
+    if (previousPath) await supabase().storage.from('brand-assets').remove([previousPath]);
+  }
+  return data as StoreBranding;
+}
+
+export async function clearSecondaryStoreImage(previousUrl?: string | null) {
+  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', secondary_image_url: null, updated_at: new Date().toISOString() }).select('id,logo_url,custom_html,custom_css,secondary_image_url,updated_at').single();
+  if (error) throw error;
+  if (previousUrl) {
+    const marker = '/storage/v1/object/public/brand-assets/';
+    const previousPath = previousUrl.includes(marker) ? previousUrl.split(marker)[1] : null;
+    if (previousPath) await supabase().storage.from('brand-assets').remove([previousPath]);
+  }
+  return data as StoreBranding;
 }
 
 export async function uploadStoreLogo(file: File, previousUrl?: string | null) {
