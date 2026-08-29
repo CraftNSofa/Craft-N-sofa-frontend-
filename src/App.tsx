@@ -36,6 +36,7 @@ import type { StoreContentBlock } from './lib/commerce';
 import { INITIAL_SAMPLE_PRODUCTS } from './config/supabase';
 import { clearStoreLogo, createExpense, deleteCategory, deleteProduct as deleteRemoteProduct, deleteStoreBanner, deleteTag, getCurrentUser, loadBanners, loadCategories, loadExpenses, loadOrders, loadProducts, loadStoreBranding, loadTags, saveStoreContent, uploadSecondaryStoreImage, clearSecondaryStoreImage, signInAdmin, signOutAdmin, subscribeToOrders, updateOrderStatus as updateRemoteOrderStatus, upsertCategory, upsertTag, saveProduct as saveRemoteProduct, uploadProductImage, uploadCategoryImage, uploadStoreBanner, uploadStoreLogo, savePromoCards as saveRemotePromoCards, uploadPromoCardImage, deletePromoCardImage, uploadStoreContentImage, deleteStoreContentImage } from './lib/commerce';
 import { getSupabaseClient } from './config/supabase';
+import { LiveProductModal } from './components/LiveProductModal';
 
 type Tab = 'overview' | 'products' | 'add-product' | 'add-category' | 'categories' | 'add-tag' | 'tags' | 'orders' | 'finance' | 'promotions' | 'settings';
 type OrderStatus = 'Pending' | 'Confirmed' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
@@ -44,7 +45,7 @@ type AdminTag = ProductTag;
 type Order = { id: string; customer: string; location: string; items: number; total: number; cost: number; status: OrderStatus; date: string; payment: 'Paid' | 'Pending' };
 type Expense = { id: string; title: string; category: string; amount: number; date: string };
 
-type ProductForm = { id?: string; name: string; description: string; price: number; discount_price: number | null; original_price: number | null; category: string; category_id?: string | null; image_url: string; images: string[]; colors: string[]; tags: string[]; stock: number; featured: boolean; cost_price: number; published?: boolean; image_file?: File };
+type ProductForm = { id?: string; name: string; description: string; price: number; discount_price: number | null; original_price: number | null; category: string; category_id?: string | null; image_url: string; images: string[]; colors: string[]; tags: string[]; stock: number; featured: boolean; cost_price: number; published?: boolean; image_file?: File; image_files?: File[] };
 type PromoCardDraft = PromoCard & { image_file?: File };
 type StoreContentData = { custom_html: string; custom_css: string; secondary_image_url: string | null; secondary_image_title: string; content_blocks: StoreContentBlock[] };
 
@@ -177,8 +178,10 @@ function App() {
     try {
       let imageUrl = data.image_url;
       if (data.image_file && remoteReady) imageUrl = await uploadProductImage(data.image_file);
+      const uploadedGallery = remoteReady && data.image_files?.length ? await Promise.all(data.image_files.map(file => uploadProductImage(file))) : [];
+      const galleryImages = [...(data.images || []).filter(image => !image.startsWith('blob:')), ...uploadedGallery].slice(0, 8);
       const selectedCategory = activeCategories.find(category => category.name === data.category);
-      const item = { ...data, category_id: data.category_id || selectedCategory?.id || null, image_url: imageUrl, images: imageUrl ? [imageUrl, ...(data.images || []).filter(image => !image.startsWith('blob:'))] : data.images, tags: data.tags || [], id: data.id || undefined, created_at: data.id ? undefined : new Date().toISOString(), updated_at: new Date().toISOString() } as Product;
+      const item = { ...data, category_id: data.category_id || selectedCategory?.id || null, image_url: imageUrl, images: imageUrl ? [imageUrl, ...galleryImages] : galleryImages, tags: data.tags || [], id: data.id || undefined, created_at: data.id ? undefined : new Date().toISOString(), updated_at: new Date().toISOString() } as Product;
       const saved = remoteReady ? await saveRemoteProduct(item) : item;
       setProducts(prev => data.id ? prev.map(p => p.id === data.id ? saved : p) : [saved, ...prev]); setProductModal(null); showToast(data.id ? 'Product updated' : 'Product added to catalogue');
     } catch (error) { showToast(error instanceof Error ? error.message : 'Could not save product'); }
@@ -234,7 +237,7 @@ function App() {
         {tab === 'settings' && <StoreSettingsView logoUrl={brandLogoUrl} banners={banners} content={storeContent} onSaveContent={handleSaveStoreContent} onUploadSecondary={async (file, title) => { try { if (!remoteReady) throw new Error('Connect the admin workspace before uploading storefront images'); await handleUploadSecondary(file, title); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not upload secondary image'); } }} onClearSecondary={async () => { try { if (!remoteReady) throw new Error('Connect the admin workspace before changing storefront images'); await handleClearSecondary(); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not remove secondary image'); }}} onUploadBlockImage={async (file, previousUrl) => { try { if (!remoteReady) return URL.createObjectURL(file); return await uploadStoreContentImage(file, previousUrl); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not upload block image'); throw error; } }} onChangeLogo={() => setBrandingModal(true)} onAddBanner={() => setBannerModal(true)} onDeleteBanner={async banner => { try { if (!remoteReady) throw new Error('Connect the admin workspace before changing banners'); await deleteStoreBanner(banner.id, banner.image_url); setBanners(current => current.filter(item => item.id !== banner.id)); showToast('Banner removed'); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not remove banner'); } }} onRemove={async () => { try { if (!remoteReady) throw new Error('Connect the admin workspace before changing branding'); await clearStoreLogo(brandLogoUrl); setBrandLogoUrl(null); showToast('Store logo removed'); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not remove logo'); } }} />}
       </div>
     </main>
-    {productModal && <ProductModal initial={productModal} categories={activeCategories} tags={tags} onClose={() => setProductModal(null)} onSave={saveProduct} />}
+    {productModal && <LiveProductModal initial={productModal} categories={activeCategories} tags={tags} onClose={() => setProductModal(null)} onSave={saveProduct} />}
     {categoryModal && <CategoryModal categories={categories} onClose={() => setCategoryModal(false)} onSave={saveCategories} onUploadImage={async file => { if (!remoteReady) return URL.createObjectURL(file); return uploadCategoryImage(file); }} />}
     {tagModal && <TagModal tags={tags} onClose={() => setTagModal(false)} onSave={saveTags} />}
     {expenseModal && <ExpenseModal onClose={() => setExpenseModal(false)} onSave={async e => { try { const saved = remoteReady ? await createExpense({ title: e.title, category: e.category, amount: e.amount, expense_date: e.date }) : { ...e, id: uid() }; setExpenses(prev => [({ id: saved.id, title: saved.title, category: saved.category, amount: Number(saved.amount), date: 'expense_date' in saved ? saved.expense_date : saved.date } as Expense), ...prev]); setExpenseModal(false); showToast('Expense recorded in ledger'); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not record expense'); } }} />}
