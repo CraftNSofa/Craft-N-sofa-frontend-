@@ -221,3 +221,13 @@
 .store-secondary-caption h2 { margin: 6px 0 0; color: #202020; font-size: clamp(22px, 3vw, 36px); font-weight: 500; letter-spacing: -.04em; }
 @media (max-width: 860px) { .content-block-layout { grid-template-columns: 1fr; } .content-block-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); } .content-block-list-head { grid-column: 1 / -1; } .content-block-list-item { border-bottom: 1px solid #f0f0f0; } .content-block-toolbar { grid-template-columns: 1fr; align-items: stretch; } .content-block-active { padding-bottom: 0; } .content-block-toolbar .danger-button { justify-self: start; } }
 @media (max-width: 640px) { .content-manager-actions { width: 100%; justify-content: flex-start; } .content-block-list { grid-template-columns: 1fr; } .content-inline-image { grid-template-columns: 1fr; } .secondary-image-row { align-items: stretch; } .secondary-image-row > div { width: 100%; } .secondary-image-row img { width: 100%; } }
+
+.content-block-list-item-wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: stretch; border-bottom: 1px solid #f0f0f0; background: #fff; }
+.content-block-list-item-wrap.selected { background: #f8f8f8; box-shadow: inset 3px 0 #111; }
+.content-block-list-item-wrap .content-block-list-item { border-bottom: 0; background: transparent; }
+.content-block-edit-button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; align-self: center; margin: 0 8px 0 2px; padding: 7px 8px; border: 1px solid #dedede; border-radius: 6px; background: #fff; color: #444; cursor: pointer; font-size: 10px; font-weight: 700; }
+.content-block-edit-button:hover, .content-block-edit-button:focus-visible { border-color: #111; color: #111; outline: none; }
+@media (max-width: 640px) { .content-block-edit-button { margin-right: 6px; padding: 7px 6px; } .content-block-edit-button span { display: none; } }
+.tile-actions button { width: auto; min-width: 27px; padding: 0 8px; gap: 4px; grid-auto-flow: column; font-size: 10px; font-weight: 700; }
+.tile-actions button span { line-height: 1; }
+@media (max-width: 560px) { .tile-actions button { padding: 0 6px; } .tile-actions button span { display: none; } }
