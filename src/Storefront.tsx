@@ -15,11 +15,11 @@ function ProductCard({ product, onAdd, onView }: { product: Product; onAdd: (pro
   const currentPrice = Number(product.discount_price ?? product.price ?? 0);
   const hasSale = product.discount_price !== null && currentPrice < originalPrice;
   return <article className="store-product">
-    <button className="product-visual" onClick={() => onView(product)} aria-label={`View ${product.name}`}>
+    <div className="product-visual" role="button" tabIndex={0} onClick={() => onView(product)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onView(product); } }} aria-label={`View ${product.name}`}>
       {product.image_url ? <img src={product.image_url} alt={product.name} /> : <div className="no-image">C<span>•</span>S</div>}
       {hasSale && <span className="sale-badge">SALE</span>}
-      <span className="quick-add" role="button" tabIndex={0} onClick={(event) => { event.stopPropagation(); onAdd(product); }}>Add to bag <Plus size={15} /></span>
-    </button>
+      <button type="button" className="quick-add" onClick={(event) => { event.stopPropagation(); onAdd(product); }}>Add to bag <Plus size={15} /></button>
+    </div>
     <div className="store-product-meta">
       <h3>{product.name}</h3>
       <div className="product-price">{hasSale && <del>{money(originalPrice)}</del>}<strong>{money(currentPrice)}</strong></div>
