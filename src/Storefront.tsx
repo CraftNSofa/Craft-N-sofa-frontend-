@@ -7,7 +7,7 @@ import './storefront.css';
 type CartLine = { product: Product; quantity: number };
 type StoreContentData = { custom_html: string; custom_css: string; secondary_image_url: string | null; secondary_image_title: string; content_blocks: StoreContentBlock[] };
 
-const money = (value: number) => `₹${Math.round(value).toLocaleString('en-IN')}`;
+const money = (value: number) => `Rs ${Math.round(value).toLocaleString('en-IN')}`;
 const slugify = (value: string) => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
 function ProductCard({ product, onAdd }: { product: Product; onAdd: (product: Product) => void }) {
