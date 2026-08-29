@@ -269,6 +269,7 @@
 /* Reference-style collection and product cards */
 .collection { max-width: 1360px; padding: 74px 16px 120px; }
 .collection-reference-heading { align-items: center; display: flex; flex-direction: column; position: relative; text-align: center; }
+.collection-simple-title { color: #242424; font-family: 'Playfair Display', Georgia, serif; font-size: clamp(34px, 4vw, 48px); font-weight: 500; letter-spacing: -.035em; line-height: 1.1; margin: 0 auto 42px; text-align: center; }
 .collection-reference-heading .store-kicker { color: #8b8b8b; }
 .collection-reference-heading h2 { color: #242424; font-family: 'Playfair Display', Georgia, serif; font-size: clamp(34px, 4vw, 48px); font-weight: 500; letter-spacing: -.035em; line-height: 1.1; margin: 13px 0 16px; }
 .view-all-button { background: #fff; border: 1px solid #252525; color: #252525; cursor: pointer; font-size: 12px; letter-spacing: .02em; min-width: 122px; padding: 11px 24px; }
