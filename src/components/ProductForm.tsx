@@ -146,14 +146,22 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
+    const availableSlots = Math.max(0, 8 - imagesList.length);
+    if (availableSlots === 0) {
+      setUploadError('You can add up to 8 secondary popup images.');
+      if (galleryFileInputRef.current) galleryFileInputRef.current.value = '';
+      return;
+    }
+
+    const selectedFiles = Array.from(files).slice(0, availableSlots);
     setIsGalleryUploading(true);
     setUploadError(null);
 
     const uploadedUrls: string[] = [];
 
     try {
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
         if (!file.type.startsWith('image/')) continue;
         const publicUrl = await uploadImageToSupabase(file);
         uploadedUrls.push(publicUrl);
@@ -407,7 +415,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             </div>
 
             <p className="text-xs text-gray-500 mb-3">
-              Select an image file from your device. It will upload directly to Supabase Storage and create a public link.
+              This is the single Main Image shown on the storefront product card. Select an image file and it will upload directly to Supabase Storage.
             </p>
 
             {/* File Upload Box */}
@@ -480,17 +488,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             )}
           </div>
 
-          {/* Multiple Gallery Product Images Upload */}
+          {/* Secondary Product Popup Images Upload */}
           <div className="md:col-span-2 bg-gray-50/80 p-4 rounded-xl border border-gray-200">
             <div className="flex items-center justify-between mb-2">
               <label className="block text-xs font-bold text-gray-800 uppercase tracking-wider flex items-center gap-1.5">
                 <ImageIcon className="w-4 h-4 text-purple-600" />
-                Additional Gallery Images (Multiple Uploads)
+                Secondary Images for Product Popup (Up to 8)
               </label>
             </div>
 
             <p className="text-xs text-gray-500 mb-3">
-              Upload multiple product angles or detail shots directly to Supabase Storage.
+              These images stay separate from the Main Product Image and appear in the product popup/gallery. Upload up to 8 additional angles or detail shots.
             </p>
 
             <div className="flex flex-col gap-3">
@@ -516,12 +524,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   ) : (
                     <Plus className="w-4 h-4 text-purple-600" />
                   )}
-                  <span>{isGalleryUploading ? 'Uploading Files...' : '+ Upload Gallery Images'}</span>
+                  <span>{isGalleryUploading ? 'Uploading Files...' : '+ Add Secondary Popup Images'}</span>
                 </label>
 
                 {imagesList.length > 0 && (
                   <span className="text-xs font-semibold text-gray-600">
-                    {imagesList.length} gallery {imagesList.length === 1 ? 'image' : 'images'} attached
+                    {imagesList.length} of 8 secondary popup {imagesList.length === 1 ? 'image' : 'images'} attached
                   </span>
                 )}
               </div>

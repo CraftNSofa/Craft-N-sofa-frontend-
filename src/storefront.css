@@ -301,3 +301,26 @@
   .collection .store-grid { grid-template-columns: 1fr; }
   .collection .product-visual { max-height: none; }
 }
+
+
+/* Product detail popup with secondary image gallery */
+.product-modal-backdrop { align-items: center; background: rgba(15, 15, 15, .58); display: flex; inset: 0; justify-content: center; padding: 24px; position: fixed; z-index: 30; }
+.product-modal { background: #f8f7f4; display: grid; gap: 34px; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); max-height: min(760px, calc(100vh - 48px)); max-width: 1040px; overflow: auto; padding: 28px; position: relative; width: 100%; }
+.product-modal-close { background: #fff; border: 0; color: #111; cursor: pointer; display: grid; padding: 9px; place-items: center; position: absolute; right: 18px; top: 18px; z-index: 2; }
+.product-modal-main-image { aspect-ratio: 1 / 1; background: #e8e5df; overflow: hidden; width: 100%; }
+.product-modal-main-image img { height: 100%; object-fit: cover; width: 100%; }
+.product-modal-thumbnails { display: grid; gap: 9px; grid-template-columns: repeat(8, minmax(0, 1fr)); margin-top: 12px; }
+.product-modal-thumbnails button { aspect-ratio: 1 / 1; background: #e8e5df; border: 1px solid transparent; cursor: pointer; overflow: hidden; padding: 0; }
+.product-modal-thumbnails button.active { border-color: #111; }
+.product-modal-thumbnails img { height: 100%; object-fit: cover; width: 100%; }
+.product-modal-copy { align-self: center; padding: 24px 12px 24px 0; }
+.product-modal-copy h2 { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(34px, 4vw, 58px); font-weight: 500; letter-spacing: -.045em; line-height: 1.04; margin: 16px 0 22px; }
+.product-modal-copy .product-price { margin-bottom: 24px; }
+.product-modal-copy p { color: #6c6b68; font-size: 14px; line-height: 1.75; margin: 0 0 28px; }
+@media (max-width: 720px) {
+  .product-modal-backdrop { padding: 12px; }
+  .product-modal { display: block; max-height: calc(100vh - 24px); padding: 16px; }
+  .product-modal-copy { padding: 22px 0 8px; }
+  .product-modal-copy h2 { font-size: 36px; }
+  .product-modal-thumbnails { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
