@@ -333,3 +333,12 @@
   .product-modal-copy h2 { font-size: 36px; }
   .product-modal-thumbnails { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
+
+.collection-carousel { position: relative; }
+.collection-carousel .store-grid { padding-right: 58px; scroll-behavior: smooth; }
+.collection-next { align-items: center; background: #151515; border: 1px solid #151515; border-radius: 50%; color: #fff; cursor: pointer; display: flex; height: 42px; justify-content: center; position: absolute; right: 5px; top: calc(50% - 28px); width: 42px; z-index: 3; }
+.collection-next:hover { background: #fff; color: #151515; }
+@media (max-width: 680px) {
+  .collection-carousel .store-grid { padding-right: 48px; }
+  .collection-next { height: 36px; right: 2px; width: 36px; }
+}
