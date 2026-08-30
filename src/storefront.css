@@ -342,3 +342,16 @@
   .collection-carousel .store-grid { padding-right: 48px; }
   .collection-next { height: 36px; right: 2px; width: 36px; }
 }
+
+/* Automatic homepage product marquee */
+.collection-carousel { overflow: hidden; position: relative; width: 100%; }
+.collection-carousel .collection-track { animation: craft-sofa-marquee 34s linear infinite; display: flex; gap: 22px; overflow: visible !important; padding-right: 0 !important; scroll-behavior: auto; width: max-content; will-change: transform; }
+.collection-carousel .collection-track .store-product { flex: 0 0 clamp(220px, 22vw, 316px); }
+@keyframes craft-sofa-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (max-width: 680px) {
+  .collection-carousel .collection-track { gap: 14px; }
+  .collection-carousel .collection-track .store-product { flex-basis: min(72vw, 280px); }
+}
