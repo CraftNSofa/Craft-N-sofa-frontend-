@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { ArrowRight, Check, ChevronDown, Menu, Minus, Plus, Search, ShoppingBag, UserRound, X } from 'lucide-react';
 import type { Banner, Product, PromoCard } from './types';
 import { createStorefrontOrder, loadBanners, loadCategories, loadProducts, loadStoreBranding, subscribeToCatalogue, type RemoteCategory, type StoreContentBlock } from './lib/commerce';
@@ -77,6 +77,7 @@ export default function Storefront() {
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [storeContent, setStoreContent] = useState<StoreContentData>({ custom_html: '', custom_css: '', secondary_image_url: null, secondary_image_title: 'Craft N Sofa collection', content_blocks: [] });
   const [promoCards, setPromoCards] = useState<PromoCard[]>([]);
+  const collectionGridRef = useRef<HTMLDivElement>(null);
   const pathSegments = window.location.pathname.split('/').filter(Boolean);
   const isCategoryPage = pathSegments[0] === 'category' || pathSegments[0] === 'categories';
   const categorySlug = pathSegments[1] || '';
@@ -108,6 +109,21 @@ export default function Storefront() {
     const query = searchTerm.trim().toLowerCase();
     return query ? categoryProducts.filter(product => `${product.name} ${product.category}`.toLowerCase().includes(query)) : categoryProducts;
   }, [activeCategory, products, searchTerm]);
+
+  useEffect(() => {
+    if (isCategoryPage || loading || filtered.length < 2) return;
+    const row = collectionGridRef.current;
+    if (!row || row.scrollWidth <= row.clientWidth) return;
+    let frame = 0;
+    const move = () => {
+      row.scrollLeft += 0.45;
+      if (row.scrollLeft + row.clientWidth >= row.scrollWidth - 1) row.scrollLeft = 0;
+      frame = window.requestAnimationFrame(move);
+    };
+    frame = window.requestAnimationFrame(move);
+    return () => window.cancelAnimationFrame(frame);
+  }, [filtered.length, isCategoryPage, loading]);
+
   const routeCategory = useMemo(() => {
     if (!categorySlug) return null;
     return categories.find(category => category.slug === categorySlug || slugify(category.name) === categorySlug || category.id === categorySlug) || null;
@@ -124,7 +140,7 @@ export default function Storefront() {
       {isCategoryPage ? <CategoryPage categories={categories} selectedCategory={routeCategory} products={categoryPageProducts} loading={loading} onAdd={add} onView={setQuickViewProduct} /> : <>
       <section className="store-banner-carousel" aria-label="Craft N Sofa promotions">{banners.length ? <>{banners.map((banner, index) => <img key={banner.id} className={`store-carousel-slide ${index === activeBanner ? 'active' : ''}`} src={banner.image_url} alt={banner.alt_text} />)}{banners.length > 1 && <div className="store-carousel-controls" aria-label="Banner navigation">{banners.map((banner, index) => <button key={banner.id} className={index === activeBanner ? 'active' : ''} aria-label={`Show banner ${index + 1}`} onClick={() => setActiveBanner(index)} />)}</div>}</> : <div className="store-banner-empty"><span className="store-kicker">CRAFT N SOFA</span><h1>Your next banner will appear here.</h1><p>Upload a 1500 × 500 promotional banner from Store Settings.</p></div>}</section>
       {storeContent.secondary_image_url && <section className="store-secondary-image"><img src={storeContent.secondary_image_url} alt={storeContent.secondary_image_title || 'Craft N Sofa collection'} /><div className="store-secondary-caption"><span className="store-kicker">CRAFT N SOFA</span><h2>{storeContent.secondary_image_title || 'Craft N Sofa collection'}</h2></div></section>}{storeContent.content_blocks.filter(block => block.active).map(block => <section className="store-content-block" key={block.id}><div dangerouslySetInnerHTML={{ __html: block.html }} />{block.image_url && <figure className="store-content-block-image"><img src={block.image_url} alt={block.image_title || block.title} title={block.image_title || block.title} />{block.image_title && <figcaption>{block.image_title}</figcaption>}</figure>}<style dangerouslySetInnerHTML={{ __html: block.css }} /></section>)}{!storeContent.content_blocks.length && storeContent.custom_html && <section className="store-custom-block" dangerouslySetInnerHTML={{ __html: storeContent.custom_html }} />}{!storeContent.content_blocks.length && storeContent.custom_css && <style dangerouslySetInnerHTML={{ __html: storeContent.custom_css }} />}
-<section className="collection" id="collection"><h2 className="collection-simple-title">Double Bed and Sofa Cumbed</h2>{loading ? <div className="store-loading">Loading the collection…</div> : <div className="store-grid">{filtered.map(product => <ProductCard key={String(product.id)} product={product} onAdd={add} onView={setQuickViewProduct} />)}</div>}</section>
+<section className="collection" id="collection"><h2 className="collection-simple-title">Double Bed and Sofa Cumbed</h2>{loading ? <div className="store-loading">Loading the collection…</div> : <div ref={collectionGridRef} className="store-grid">{filtered.map(product => <ProductCard key={String(product.id)} product={product} onAdd={add} onView={setQuickViewProduct} />)}</div>}</section>
       {promoCards.filter(card => card.active && card.image_url && card.title).length > 0 && <section className="promo-showcase" aria-label="Featured collections"><div className="section-heading promo-showcase-heading"><div><span className="store-kicker">CURATED FOR YOUR HOME</span><h2>Explore the details.</h2></div><span className="piece-count">{promoCards.filter(card => card.active && card.image_url && card.title).length} collections</span></div><div className="promo-card-grid">{promoCards.filter(card => card.active && card.image_url && card.title).map(card => <button className="promo-card" key={card.id} onClick={() => { setActiveCategory(card.link_category || 'All pieces'); document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' }); }}><img src={card.image_url} alt={card.title} /><span className="promo-card-shade" /><span className="promo-card-copy"><span className="store-kicker">{card.eyebrow || 'COLLECTION'}</span><strong>{card.title}</strong><span className="promo-card-link">Shop collection <ArrowRight size={15} /></span></span></button>)}</div></section>}
       </>}
     </main>
