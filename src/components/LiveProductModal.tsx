@@ -72,11 +72,18 @@ export function LiveProductModal({
     if (galleryInput.current) galleryInput.current.value = '';
   };
 
-  const submit = () => onSave({
-    ...form,
-    images: gallery.filter((item) => !item.file).map((item) => item.url),
-    image_files: gallery.filter((item) => item.file).map((item) => item.file as File),
-  });
+  const submit = () => {
+    const originalPrice = Number(form.original_price ?? form.price ?? 0);
+    const sellingPrice = Number(form.discount_price ?? form.price ?? 0);
+    onSave({
+      ...form,
+      price: originalPrice,
+      original_price: originalPrice,
+      discount_price: sellingPrice < originalPrice ? sellingPrice : null,
+      images: gallery.filter((item) => !item.file).map((item) => item.url),
+      image_files: gallery.filter((item) => item.file).map((item) => item.file as File),
+    });
+  };
 
   return (
     <div className="modal-backdrop" onMouseDown={onClose}>
@@ -85,7 +92,8 @@ export function LiveProductModal({
         <div className="modal-grid">
           <label>Product name<input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} placeholder="e.g. Cloud 3-Seater Sofa" /></label>
           <label>Category<select value={form.category} onChange={(event) => { const category = categories.find((item) => item.name === event.target.value); setForm({ ...form, category: event.target.value, category_id: category?.id || null }); }}>{categories.map((category) => <option key={category.id} value={category.name}>{category.name}</option>)}</select></label>
-          <label>Selling price<input type="number" value={form.price} onChange={(event) => setForm({ ...form, price: Number(event.target.value) })} /></label>
+          <label>Original price (Rs.)<input type="number" min="0" value={form.original_price ?? form.price ?? 0} onChange={(event) => { const value = Number(event.target.value); setForm({ ...form, price: value, original_price: value }); }} /><small className="field-help">The crossed-out price shown before a sale.</small></label>
+          <label>Discount / selling price (Rs.)<input type="number" min="0" value={form.discount_price ?? form.price ?? 0} onChange={(event) => { const value = Number(event.target.value); setForm({ ...form, discount_price: Number.isFinite(value) ? value : null }); }} /><small className="field-help">The current price customers pay.</small></label>
           <label>Cost price<input type="number" value={form.cost_price || 0} onChange={(event) => setForm({ ...form, cost_price: Number(event.target.value) })} /></label>
           <label>Stock units<input type="number" value={form.stock || 0} onChange={(event) => setForm({ ...form, stock: Number(event.target.value) })} /></label>
           <label>Color options<input value={form.colors?.join(', ') || ''} onChange={(event) => setForm({ ...form, colors: event.target.value.split(',').map((item) => item.trim()).filter(Boolean) })} placeholder="Beige, Charcoal" /></label>
