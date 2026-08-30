@@ -276,7 +276,9 @@
 .view-all-button:hover { background: #252525; color: #fff; }
 .collection-reference-heading .piece-count { margin-top: 18px; }
 .collection .category-tabs { justify-content: center; margin: 42px 0 30px; }
-.collection .store-grid { gap: 22px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.collection .store-grid { display: flex; gap: 22px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+.collection .store-grid::-webkit-scrollbar { display: none; }
+.collection .store-product { flex: 0 0 calc((100% - 66px) / 4); }
 .collection .product-visual { background: #eee; height: auto; aspect-ratio: 1 / 1; }
 .collection .product-visual img { object-position: center; }
 .sale-badge { background: #111; color: #fff; font-size: 9px; font-weight: 600; left: 10px; letter-spacing: .08em; padding: 6px 8px; position: absolute; top: 10px; }
@@ -288,11 +290,13 @@
 .store-card-add { align-items: center; background: #151515; border: 1px solid #151515; color: #fff; cursor: pointer; display: flex; font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 600; justify-content: center; letter-spacing: .08em; margin-top: 12px; padding: 10px 12px; text-align: center; text-transform: uppercase; transition: background .2s, color .2s; width: 100%; }
 .store-card-add:hover { background: #fff; color: #151515; }
 @media (max-width: 960px) {
-  .collection .store-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .collection .store-grid { grid-template-columns: none; }
+  .collection .store-product { flex-basis: calc((100% - 44px) / 3); }
 }
 @media (max-width: 680px) {
   .collection { padding: 58px 16px 90px; }
-  .collection .store-grid { gap: 18px 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .collection .store-grid { gap: 18px 12px; grid-template-columns: none; }
+  .collection .store-product { flex-basis: calc((100% - 12px) / 2); }
   .collection .category-tabs { justify-content: flex-start; }
   .collection .product-visual { aspect-ratio: 1 / 1; }
   .collection .store-product-meta h3 { font-size: 13px; }
@@ -302,7 +306,8 @@
 }
 
 @media (max-width: 420px) {
-  .collection .store-grid { grid-template-columns: 1fr; }
+  .collection .store-grid { grid-template-columns: none; }
+  .collection .store-product { flex-basis: 84vw; }
   .collection .product-visual { max-height: none; }
 }
 
