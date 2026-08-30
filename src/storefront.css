@@ -390,3 +390,10 @@
   .store-category-dropdown::before { display: none; }
   .store-category-dropdown a { padding: 11px 6px; }
 }
+
+
+/* Floating WhatsApp contact button */
+.whatsapp-float { align-items: center; background: #25d366; border: 3px solid rgba(255,255,255,.9); border-radius: 999px; bottom: 28px; box-shadow: 0 8px 24px rgba(0,0,0,.18); color: #fff; display: inline-flex; height: 58px; justify-content: center; position: fixed; right: 24px; transition: transform .2s ease, box-shadow .2s ease; width: 58px; z-index: 18; }
+.whatsapp-float:hover { box-shadow: 0 10px 28px rgba(0,0,0,.24); transform: scale(1.06); }
+.whatsapp-float svg { fill: currentColor; height: 31px; width: 31px; }
+@media (max-width: 600px) { .whatsapp-float { bottom: 20px; height: 52px; right: 16px; width: 52px; } .whatsapp-float svg { height: 28px; width: 28px; } }
