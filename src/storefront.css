@@ -355,3 +355,19 @@
   .collection-carousel .collection-track { gap: 14px; }
   .collection-carousel .collection-track .store-product { flex-basis: min(72vw, 280px); }
 }
+
+/* One-card-at-a-time homepage carousel controls */
+.collection-carousel .collection-track { animation: none; overflow-x: auto !important; scroll-behavior: smooth; transform: none; width: 100%; }
+.collection-carousel .collection-track::-webkit-scrollbar { display: none; }
+.collection-carousel .collection-track { scrollbar-width: none; }
+.collection-nav { align-items: center; background: #151515; border: 1px solid #151515; border-radius: 50%; color: #fff; cursor: pointer; display: flex; height: 42px; justify-content: center; position: absolute; top: calc(50% - 28px); width: 42px; z-index: 4; }
+.collection-nav:hover { background: #fff; color: #151515; }
+.collection-nav-left { left: 8px; }
+.collection-nav-right { right: 8px; }
+.collection-nav-left svg { transform: rotate(90deg); }
+.collection-nav-right svg { transform: rotate(-90deg); }
+@media (max-width: 680px) {
+  .collection-nav { height: 36px; top: calc(50% - 24px); width: 36px; }
+  .collection-nav-left { left: 3px; }
+  .collection-nav-right { right: 3px; }
+}
