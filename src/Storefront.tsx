@@ -22,6 +22,7 @@ function ProductCard({ product, onAdd, onView }: { product: Product; onAdd: (pro
     </div>
     <div className="store-product-meta">
       <h3>{product.name}</h3>
+      {product.tags && product.tags.length > 0 && <div className="product-tags" aria-label="Product tags">{product.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>}
       <div className="product-price">{hasSale && <del>{money(originalPrice)}</del>}<strong>{money(currentPrice)}</strong></div>
       <button type="button" className="store-card-add" onClick={() => onAdd(product)}>Add to cart</button>
     </div>
@@ -42,7 +43,7 @@ function ProductQuickView({ product, onAdd, onClose }: { product: Product; onAdd
         <div className="product-modal-main-image">{activeImage ? <img src={activeImage} alt={product.name} /> : <div className="no-image">C<span>•</span>S</div>}</div>
         {gallery.length > 1 && <div className="product-modal-thumbnails">{gallery.map((image, index) => <button key={image} className={image === activeImage ? 'active' : ''} onClick={() => setActiveImage(image)} aria-label={`View product image ${index + 1}`}><img src={image} alt={`${product.name} ${index + 1}`} /></button>)}</div>}
       </div>
-      <div className="product-modal-copy"><span className="store-kicker">{product.category || 'CRAFT N SOFA'}</span><h2>{product.name}</h2><div className="product-price">{hasSale && <del>{money(originalPrice)}</del>}<strong>{money(currentPrice)}</strong></div>{product.description && <p>{product.description}</p>}<button className="store-button dark" onClick={() => onAdd(product)}>Add to bag <Plus size={16} /></button></div>
+      <div className="product-modal-copy"><span className="store-kicker">{product.category || 'CRAFT N SOFA'}</span><h2>{product.name}</h2>{product.tags && product.tags.length > 0 && <div className="product-tags product-modal-tags" aria-label="Product tags">{product.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>}<div className="product-price">{hasSale && <del>{money(originalPrice)}</del>}<strong>{money(currentPrice)}</strong></div>{product.description && <p>{product.description}</p>}<button className="store-button dark" onClick={() => onAdd(product)}>Add to bag <Plus size={16} /></button></div>
     </section>
   </div>;
 }

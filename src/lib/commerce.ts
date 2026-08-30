@@ -222,10 +222,10 @@ export async function saveProduct(product: Product & { cost_price?: number; cate
     published: product.published ?? true,
     updated_at: new Date().toISOString(),
   };
-  const request = product.id ? supabase().from('products').update(payload).eq('id', product.id).select('id,name,description,price,discount_price,original_price,category,image_url,images,colors,stock,featured,created_at,updated_at,category_id,cost_price,published').single() : supabase().from('products').insert(payload).select('id,name,description,price,discount_price,original_price,category,image_url,images,colors,stock,featured,created_at,updated_at,category_id,cost_price,published').single();
+  const request = product.id ? supabase().from('products').update(payload).eq('id', product.id).select('id,name,description,price,discount_price,original_price,category,image_url,images,colors,tags,stock,featured,created_at,updated_at,category_id,cost_price,published').single() : supabase().from('products').insert(payload).select('id,name,description,price,discount_price,original_price,category,image_url,images,colors,tags,stock,featured,created_at,updated_at,category_id,cost_price,published').single();
   const { data, error } = await request;
   if (error) throw error;
-  return { ...(data as Product), images: data.images ?? [], colors: data.colors ?? [], image_url: data.image_url ?? '', category: data.category ?? '' } as Product;
+  return { ...(data as Product), images: data.images ?? [], colors: data.colors ?? [], tags: data.tags ?? [], image_url: data.image_url ?? '', category: data.category ?? '' } as Product;
 }
 
 export async function deleteProduct(id: string | number) {

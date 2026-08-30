@@ -397,3 +397,17 @@
 .whatsapp-float:hover { box-shadow: 0 10px 28px rgba(0,0,0,.24); transform: scale(1.06); }
 .whatsapp-float svg { fill: currentColor; height: 31px; width: 31px; }
 @media (max-width: 600px) { .whatsapp-float { bottom: 20px; height: 52px; right: 16px; width: 52px; } .whatsapp-float svg { height: 28px; width: 28px; } }
+
+/* Product tag badges */
+.product-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 10px; }
+.product-tags span { border: 1px solid rgba(20,20,20,.18); color: #666; display: inline-flex; font-size: 10px; letter-spacing: .08em; padding: 4px 8px; text-transform: uppercase; }
+.product-modal-tags { margin-top: 12px; }
+.product-modal-tags span { font-size: 11px; }
+
+/* Admin product tag picker */
+.tag-picker { border: 0; margin: 0; min-width: 0; padding: 0; }
+.tag-picker legend { font-size: 11px; letter-spacing: .08em; margin-bottom: 8px; text-transform: uppercase; }
+.tag-picker-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag-choice { align-items: center; border: 1px solid #ddd; cursor: pointer; display: inline-flex; font-size: 12px; gap: 7px; padding: 8px 10px; text-transform: none; }
+.tag-choice input { accent-color: #111; margin: 0; }
+.tag-choice.selected { background: #151515; border-color: #151515; color: #fff; }
