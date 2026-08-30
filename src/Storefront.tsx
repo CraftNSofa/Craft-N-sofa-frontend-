@@ -14,15 +14,16 @@ function ProductCard({ product, onAdd, onView }: { product: Product; onAdd: (pro
   const originalPrice = Number(product.original_price || product.price || 0);
   const currentPrice = Number(product.discount_price ?? product.price ?? 0);
   const hasSale = product.discount_price !== null && currentPrice < originalPrice;
+  const discountPercent = hasSale && originalPrice > 0 ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100) : 0;
   return <article className="store-product">
     <div className="product-visual" role="button" tabIndex={0} onClick={() => onView(product)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onView(product); } }} aria-label={`View ${product.name}`}>
       {product.image_url ? <img src={product.image_url} alt={product.name} /> : <div className="no-image">C<span>•</span>S</div>}
-      {hasSale && <span className="sale-badge">SALE</span>}
-      <button type="button" className="quick-add" onClick={(event) => { event.stopPropagation(); onAdd(product); }}>Add to bag <Plus size={15} /></button>
+      {hasSale && <span className="sale-badge">-{discountPercent}% OFF</span>}
     </div>
     <div className="store-product-meta">
       <h3>{product.name}</h3>
       <div className="product-price">{hasSale && <del>{money(originalPrice)}</del>}<strong>{money(currentPrice)}</strong></div>
+      <button type="button" className="store-card-add" onClick={() => onAdd(product)}>Add to cart <Plus size={15} /></button>
     </div>
   </article>;
 }
