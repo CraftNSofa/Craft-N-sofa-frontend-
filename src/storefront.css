@@ -285,7 +285,7 @@
 .product-price { align-items: center; display: flex; flex-wrap: wrap; gap: 9px; }
 .product-price del { color: #888; font-size: 12px; }
 .product-price strong { color: #252525; font-size: 14px; font-weight: 500; }
-.store-card-add { align-items: center; background: #151515; border: 1px solid #151515; color: #fff; cursor: pointer; display: flex; font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 600; justify-content: space-between; letter-spacing: .08em; margin-top: 12px; padding: 10px 12px; text-transform: uppercase; transition: background .2s, color .2s; width: 100%; }
+.store-card-add { align-items: center; background: #151515; border: 1px solid #151515; color: #fff; cursor: pointer; display: flex; font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 600; justify-content: center; letter-spacing: .08em; margin-top: 12px; padding: 10px 12px; text-align: center; text-transform: uppercase; transition: background .2s, color .2s; width: 100%; }
 .store-card-add:hover { background: #fff; color: #151515; }
 @media (max-width: 960px) {
   .collection .store-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }

@@ -23,7 +23,7 @@ function ProductCard({ product, onAdd, onView }: { product: Product; onAdd: (pro
     <div className="store-product-meta">
       <h3>{product.name}</h3>
       <div className="product-price">{hasSale && <del>{money(originalPrice)}</del>}<strong>{money(currentPrice)}</strong></div>
-      <button type="button" className="store-card-add" onClick={() => onAdd(product)}>Add to cart <Plus size={15} /></button>
+      <button type="button" className="store-card-add" onClick={() => onAdd(product)}>Add to cart</button>
     </div>
   </article>;
 }
