@@ -50,6 +50,24 @@ export async function updateStoreBanner(id: string, changes: Partial<Pick<Remote
   return data as RemoteBanner;
 }
 
+export async function replaceStoreBannerAssets(banner: RemoteBanner, desktopFile: File | null, mobileFile: File | null, removeMobile: boolean, altText: string) {
+  const upload = async (file: File, prefix: string) => {
+    const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+    const storagePath = `banners/${prefix}-${crypto.randomUUID()}.${extension}`;
+    const { error: uploadError } = await supabase().storage.from('brand-assets').upload(storagePath, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+    if (uploadError) throw uploadError;
+    const { data } = supabase().storage.from('brand-assets').getPublicUrl(storagePath);
+    return data.publicUrl;
+  };
+  const nextDesktopUrl = desktopFile ? await upload(desktopFile, 'desktop-banner') : banner.image_url;
+  const nextMobileUrl = removeMobile ? null : mobileFile ? await upload(mobileFile, 'mobile-banner') : banner.mobile_image_url;
+  const { data, error } = await supabase().from('store_banners').update({ image_url: nextDesktopUrl, mobile_image_url: nextMobileUrl, alt_text: altText.trim() || 'Craft N Sofa collection' }).eq('id', banner.id).select('id,image_url,mobile_image_url,alt_text,active,sort_order,created_at,updated_at').single();
+  if (error) throw error;
+  const marker = '/storage/v1/object/public/brand-assets/';
+  const oldPaths = [desktopFile ? banner.image_url : null, (mobileFile || removeMobile) ? banner.mobile_image_url : null].filter(Boolean).map(url => url!.includes(marker) ? url!.split(marker)[1] : null).filter(Boolean) as string[];
+  if (oldPaths.length) await supabase().storage.from('brand-assets').remove(oldPaths);
+  return data as RemoteBanner;
+}
 export async function deleteStoreBanner(id: string, imageUrl?: string | null, mobileImageUrl?: string | null) {
   const { error } = await supabase().from('store_banners').delete().eq('id', id);
   if (error) throw error;
