@@ -25,6 +25,7 @@ export interface Product {
 export interface Banner {
   id: string;
   image_url: string;
+  mobile_image_url: string | null;
   alt_text: string;
   active: boolean;
   sort_order: number;

@@ -24,45 +24,47 @@ export async function getCurrentUser(): Promise<User | null> {
 }
 
 export async function loadBanners(): Promise<RemoteBanner[]> {
-  const { data, error } = await supabase().from('store_banners').select('id,image_url,alt_text,active,sort_order,created_at,updated_at').order('sort_order').order('created_at');
+  const { data, error } = await supabase().from('store_banners').select('id,image_url,mobile_image_url,alt_text,active,sort_order,created_at,updated_at').order('sort_order').order('created_at');
   if (error) throw error;
   return data ?? [];
 }
 
-export async function uploadStoreBanner(file: File, altText = 'Craft N Sofa collection') {
-  const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-  const path = `banners/banner-${crypto.randomUUID()}.${extension}`;
-  const { error: uploadError } = await supabase().storage.from('brand-assets').upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type });
-  if (uploadError) throw uploadError;
-  const { data: publicUrl } = supabase().storage.from('brand-assets').getPublicUrl(path);
-  const { data, error } = await supabase().from('store_banners').insert({ image_url: publicUrl.publicUrl, alt_text: altText.trim() || 'Craft N Sofa collection', sort_order: 0, active: true }).select('id,image_url,alt_text,active,sort_order,created_at,updated_at').single();
+export async function uploadStoreBanner(desktopFile: File, mobileFile: File | null, altText = 'Craft N Sofa collection') {
+  const upload = async (file: File, prefix: string) => {
+    const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+    const storagePath = `banners/${prefix}-${crypto.randomUUID()}.${extension}`;
+    const { error: uploadError } = await supabase().storage.from('brand-assets').upload(storagePath, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+    if (uploadError) throw uploadError;
+    const { data } = supabase().storage.from('brand-assets').getPublicUrl(storagePath);
+    return data.publicUrl;
+  };
+  const desktopUrl = await upload(desktopFile, 'desktop-banner');
+  const mobileUrl = mobileFile ? await upload(mobileFile, 'mobile-banner') : null;
+  const { data, error } = await supabase().from('store_banners').insert({ image_url: desktopUrl, mobile_image_url: mobileUrl, alt_text: altText.trim() || 'Craft N Sofa collection', sort_order: 0, active: true }).select('id,image_url,mobile_image_url,alt_text,active,sort_order,created_at,updated_at').single();
   if (error) throw error;
   return data as RemoteBanner;
 }
-
 export async function updateStoreBanner(id: string, changes: Partial<Pick<RemoteBanner, 'alt_text' | 'active' | 'sort_order'>>) {
-  const { data, error } = await supabase().from('store_banners').update(changes).eq('id', id).select('id,image_url,alt_text,active,sort_order,created_at,updated_at').single();
+  const { data, error } = await supabase().from('store_banners').update(changes).eq('id', id).select('id,image_url,mobile_image_url,alt_text,active,sort_order,created_at,updated_at').single();
   if (error) throw error;
   return data as RemoteBanner;
 }
 
-export async function deleteStoreBanner(id: string, imageUrl?: string | null) {
+export async function deleteStoreBanner(id: string, imageUrl?: string | null, mobileImageUrl?: string | null) {
   const { error } = await supabase().from('store_banners').delete().eq('id', id);
   if (error) throw error;
-  if (imageUrl) {
-    const marker = '/storage/v1/object/public/brand-assets/';
-    const path = imageUrl.includes(marker) ? imageUrl.split(marker)[1] : null;
-    if (path) await supabase().storage.from('brand-assets').remove([path]);
-  }
+  const marker = '/storage/v1/object/public/brand-assets/';
+  const paths = [imageUrl, mobileImageUrl].filter(Boolean).map(url => url!.includes(marker) ? url!.split(marker)[1] : null).filter(Boolean) as string[];
+  if (paths.length) await supabase().storage.from('brand-assets').remove(paths);
 }
-
 export async function loadCategories(): Promise<RemoteCategory[]> {
   const { data, error } = await supabase().from('categories').select('id,name,slug,description,active,sort_order,image_url,parent_id').order('sort_order');
   if (error) throw error;
   return data ?? [];
 }
 
-export type StoreContentBlock = { id: string; title: string; html: string; css: string; image_url: string | null; image_title: string; active: boolean; sort_order: number; created_at?: string; updated_at?: string };
+export type StoreContentBlockKind = 'html' | 'banner' | 'tag-carousel' | 'product-carousel';
+export type StoreContentBlock = { id: string; kind?: StoreContentBlockKind; title: string; html: string; css: string; image_url: string | null; image_title: string; tag_name?: string; active: boolean; sort_order: number; created_at?: string; updated_at?: string };
 export type StoreBranding = { id: string; logo_url: string | null; custom_html: string; custom_css: string; secondary_image_url: string | null; secondary_image_title: string; content_blocks: StoreContentBlock[]; promo_cards: PromoCard[]; updated_at: string };
 
 const defaultStoreBranding = (): StoreBranding => ({ id: 'default', logo_url: null, custom_html: '', custom_css: '', secondary_image_url: null, secondary_image_title: 'Craft N Sofa collection', content_blocks: [], promo_cards: [], updated_at: new Date(0).toISOString() });

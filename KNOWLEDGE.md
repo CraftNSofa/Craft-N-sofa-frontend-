@@ -220,3 +220,11 @@ The repository passes `pnpm run lint` and `pnpm run build`. The remaining deploy
 ## 16. Collection banner placement
 
 The public storefront loads active records from the `store_banners` table through `loadBanners()` in `src/lib/commerce.ts`. The rotating 1500 × 500 banner carousel is rendered immediately below the tag-driven “Double Bed and Sofa Cumbed” product collection in `src/Storefront.tsx`. Admins manage these images from **Store Settings → Double Bed & Sofa Cumbed banner**; uploads are stored in the `brand-assets` Supabase Storage bucket and the resulting public URL is persisted in `store_banners`. The carousel uses `object-fit: contain` and a 3:1 aspect ratio at mobile widths so the full banner is visible without cropping.
+
+## 17. Responsive main homepage banners
+
+Each `store_banners` row now supports a required desktop `image_url` and an optional square `mobile_image_url`. The admin workspace uploads these independently from **Store Settings → Main homepage banner**. The public homepage uses a `<picture>` source: the desktop artwork is recommended at 1500 × 500, while narrow screens use the optional 500 × 500 artwork. Existing banners remain compatible because the desktop image is used as the mobile fallback when `mobile_image_url` is null. Migration `013_responsive_store_banners.sql` adds the nullable mobile column.
+
+## 18. Homepage section builder
+
+`store_settings.content_blocks` is an ordered JSONB section list. Each block may be `html`, `banner`, `tag-carousel`, or `product-carousel`. The admin Store Settings page can add blocks, edit their title and active state, choose a tag for tag-driven products, move blocks up/down, and save the order. The public storefront renders active blocks in that saved order, allowing layouts such as banner → Double Bed tag carousel → banner → all-products carousel. Existing blocks without a `kind` field remain HTML blocks for backward compatibility.
