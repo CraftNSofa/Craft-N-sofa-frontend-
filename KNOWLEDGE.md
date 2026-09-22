@@ -232,3 +232,5 @@ Each `store_banners` row now supports a required desktop `image_url` and an opti
 The section builder also supports `product-grid` as a separate block type. It renders four product cards per row on desktop and two per row on mobile, while `product-carousel` remains the horizontally moving product row.
 
 Banner images are now block-local: a `main-banner` or `banner` block stores its own desktop `image_url` and optional mobile `mobile_image_url`, so each Add Block can have different artwork. Tag carousel blocks use one selected active tag from the admin tag list rather than free text.
+
+Product carousel blocks support `tag_names`: the admin displays all active tags as checkboxes, and products carrying **any** checked tag are included. With no tags checked, the product carousel shows all published products.

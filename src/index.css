@@ -259,3 +259,9 @@
 .block-banner-editor .block-mobile-image { min-height: 0; aspect-ratio: 1 / 1; }
 .block-banner-editor .secondary-image-drop img { max-height: 100%; object-fit: cover; }
 @media (max-width: 700px) { .block-banner-editor { grid-template-columns: 1fr; } }
+
+.tag-checkbox-picker { margin: 18px 0; padding: 16px; border: 1px solid #e6e6e6; background: #fafafa; }
+.tag-checkbox-picker > b { display: block; margin-bottom: 12px; font-size: 13px; }
+.tag-checkbox-picker > div { display: flex; flex-wrap: wrap; gap: 9px; }
+.tag-checkbox-picker label { align-items: center; display: inline-flex !important; gap: 7px; margin: 0 !important; padding: 8px 11px; border: 1px solid #ddd; border-radius: 7px; background: #fff; cursor: pointer; font-size: 12px; }
+.tag-checkbox-picker input { accent-color: #111; }

@@ -82,7 +82,7 @@ export async function loadCategories(): Promise<RemoteCategory[]> {
 }
 
 export type StoreContentBlockKind = 'html' | 'main-banner' | 'banner' | 'tag-carousel' | 'product-carousel' | 'product-grid';
-export type StoreContentBlock = { id: string; kind?: StoreContentBlockKind; title: string; html: string; css: string; image_url: string | null; mobile_image_url?: string | null; image_title: string; tag_name?: string; active: boolean; sort_order: number; created_at?: string; updated_at?: string };
+export type StoreContentBlock = { id: string; kind?: StoreContentBlockKind; title: string; html: string; css: string; image_url: string | null; mobile_image_url?: string | null; image_title: string; tag_name?: string; tag_names?: string[]; active: boolean; sort_order: number; created_at?: string; updated_at?: string };
 export type StoreBranding = { id: string; logo_url: string | null; custom_html: string; custom_css: string; secondary_image_url: string | null; secondary_image_title: string; content_blocks: StoreContentBlock[]; promo_cards: PromoCard[]; updated_at: string };
 
 const defaultStoreBranding = (): StoreBranding => ({ id: 'default', logo_url: null, custom_html: '', custom_css: '', secondary_image_url: null, secondary_image_title: 'Craft N Sofa collection', content_blocks: [], promo_cards: [], updated_at: new Date(0).toISOString() });
