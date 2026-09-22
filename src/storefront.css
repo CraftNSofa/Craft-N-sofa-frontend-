@@ -418,3 +418,8 @@
 .homepage-product-track { animation: craft-sofa-marquee 36s linear infinite; display: flex; flex-wrap: nowrap; gap: 22px; overflow: visible; width: max-content; }
 .homepage-product-track .store-product { flex: 0 0 clamp(220px, 22vw, 316px); }
 @media (max-width: 680px) { .homepage-product-block { padding: 55px 22px; } .homepage-product-track { gap: 14px; } .homepage-product-track .store-product { flex-basis: min(42vw, 190px); } }
+
+/* Reusable homepage product grid block */
+.homepage-grid-block { margin: 0 auto; max-width: 1320px; padding: 70px 44px 110px; }
+.homepage-product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
+@media (max-width: 800px) { .homepage-grid-block { padding: 55px 22px 80px; } .homepage-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 14px; } }

@@ -63,7 +63,7 @@ export async function loadCategories(): Promise<RemoteCategory[]> {
   return data ?? [];
 }
 
-export type StoreContentBlockKind = 'html' | 'banner' | 'tag-carousel' | 'product-carousel';
+export type StoreContentBlockKind = 'html' | 'banner' | 'tag-carousel' | 'product-carousel' | 'product-grid';
 export type StoreContentBlock = { id: string; kind?: StoreContentBlockKind; title: string; html: string; css: string; image_url: string | null; image_title: string; tag_name?: string; active: boolean; sort_order: number; created_at?: string; updated_at?: string };
 export type StoreBranding = { id: string; logo_url: string | null; custom_html: string; custom_css: string; secondary_image_url: string | null; secondary_image_title: string; content_blocks: StoreContentBlock[]; promo_cards: PromoCard[]; updated_at: string };
 

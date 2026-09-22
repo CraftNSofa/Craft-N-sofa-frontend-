@@ -228,3 +228,5 @@ Each `store_banners` row now supports a required desktop `image_url` and an opti
 ## 18. Homepage section builder
 
 `store_settings.content_blocks` is an ordered JSONB section list. Each block may be `html`, `banner`, `tag-carousel`, or `product-carousel`. The admin Store Settings page can add blocks, edit their title and active state, choose a tag for tag-driven products, move blocks up/down, and save the order. The public storefront renders active blocks in that saved order, allowing layouts such as banner → Double Bed tag carousel → banner → all-products carousel. Existing blocks without a `kind` field remain HTML blocks for backward compatibility.
+
+The section builder also supports `product-grid` as a separate block type. It renders four product cards per row on desktop and two per row on mobile, while `product-carousel` remains the horizontally moving product row.
