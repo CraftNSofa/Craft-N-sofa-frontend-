@@ -216,3 +216,7 @@ The commerce service layer in `src/lib/commerce.ts` provides authenticated catal
 Applied migrations are `001_admin_commerce.sql` for commerce tables and RLS foundations, `002_product_image_storage.sql` for the product image bucket and admin-only Storage writes, and `003_security_hardening.sql` for helper-function execution restrictions and fixed search paths. Supabase security advisors still report the Auth leaked-password-protection setting as disabled; that setting must be enabled in the Supabase Auth dashboard because it is not a database migration setting.
 
 The repository passes `pnpm run lint` and `pnpm run build`. The remaining deployment requirement is to create the first authorised admin user and assign the expected admin role/profile in Supabase Auth and the existing profile mechanism before logging into the live dashboard.
+
+## 16. Collection banner placement
+
+The public storefront loads active records from the `store_banners` table through `loadBanners()` in `src/lib/commerce.ts`. The rotating 1500 × 500 banner carousel is rendered immediately below the tag-driven “Double Bed and Sofa Cumbed” product collection in `src/Storefront.tsx`. Admins manage these images from **Store Settings → Double Bed & Sofa Cumbed banner**; uploads are stored in the `brand-assets` Supabase Storage bucket and the resulting public URL is persisted in `store_banners`. The carousel uses `object-fit: contain` and a 3:1 aspect ratio at mobile widths so the full banner is visible without cropping.

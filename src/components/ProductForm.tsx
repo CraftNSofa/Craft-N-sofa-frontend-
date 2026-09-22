@@ -153,7 +153,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       return;
     }
 
-    const selectedFiles = Array.from(files).slice(0, availableSlots);
+    const selectedFiles = Array.from(files).slice(0, availableSlots) as File[];
     setIsGalleryUploading(true);
     setUploadError(null);
 
