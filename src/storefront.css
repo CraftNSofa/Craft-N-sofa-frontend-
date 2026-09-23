@@ -428,3 +428,11 @@
 .homepage-product-block-empty .section-heading { margin-bottom: 18px; }
 .homepage-product-block-empty .store-loading { margin: 0; min-height: 0; padding: 12px 0 0; }
 @media (max-width: 680px) { .homepage-product-block-empty { padding-bottom: 34px; padding-top: 30px; } .homepage-product-block-empty .section-heading h2 { font-size: 34px; line-height: 1.05; } }
+
+/* Consistent centered product-card typography across homepage, carousels, grids and category views */
+.store-product-meta { align-items: center; display: flex; flex-direction: column; text-align: center; width: 100%; }
+.store-product-meta h3 { max-width: 100%; text-align: center; width: 100%; }
+.store-product-meta .product-tags { justify-content: center; width: 100%; }
+.store-product-meta .product-price { justify-content: center; text-align: center; width: 100%; }
+.store-product-meta .store-card-add { align-self: center; }
+@media (max-width: 800px) { .store-product-meta { align-items: center; } .store-product-meta h3, .store-product-meta .product-price { text-align: center; } }
