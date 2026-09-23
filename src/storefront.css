@@ -436,3 +436,28 @@
 .store-product-meta .product-price { justify-content: center; text-align: center; width: 100%; }
 .store-product-meta .store-card-add { align-self: center; }
 @media (max-width: 800px) { .store-product-meta { align-items: center; } .store-product-meta h3, .store-product-meta .product-price { text-align: center; } }
+
+/* Final product-card consistency overrides */
+.collection .store-product-meta,
+.category-page-products .store-product-meta,
+.homepage-product-block .store-product-meta,
+.homepage-grid-block .store-product-meta { align-items: center; display: flex; flex-direction: column; justify-content: flex-start; text-align: center; width: 100%; }
+.collection .store-product-meta h3,
+.category-page-products .store-product-meta h3,
+.homepage-product-block .store-product-meta h3,
+.homepage-grid-block .store-product-meta h3 { text-align: center; width: 100%; }
+.collection .store-product-meta .product-price,
+.category-page-products .store-product-meta .product-price,
+.homepage-product-block .store-product-meta .product-price,
+.homepage-grid-block .store-product-meta .product-price { justify-content: center; text-align: center; width: 100%; }
+.collection .store-product-meta .store-card-add,
+.category-page-products .store-product-meta .store-card-add,
+.homepage-product-block .store-product-meta .store-card-add,
+.homepage-grid-block .store-product-meta .store-card-add { align-self: center; }
+
+/* Two product cards per row/viewport on mobile, including the homepage carousel. */
+@media (max-width: 680px) {
+  .collection-carousel .collection-track .store-product { flex-basis: calc((100% - 14px) / 2); }
+  .homepage-product-track .store-product { flex-basis: calc((100vw - 58px) / 2); }
+  .category-page-products .store-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 14px; }
+}
