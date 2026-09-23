@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Product, SupabaseConfig } from '../types';
+import { normalizeSquareImage } from '../lib/image-normalize';
 
 export const DEFAULT_SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://zvkeixogcslxnehplbby.supabase.co";
 export const DEFAULT_SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_dwBpJpE2V4A9g-dvMSvq7A_1uISngdR";
@@ -69,7 +70,8 @@ export async function uploadImageToSupabase(
   const config = getSupabaseConfig();
   const supabase = getSupabaseClient();
 
-  const fileExt = file.name.split('.').pop() || 'jpg';
+  const normalized = await normalizeSquareImage(file);
+  const fileExt = 'jpg';
   const cleanFileName = file.name.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
   const filePath = `products/${Date.now()}_${cleanFileName}.${fileExt}`;
 
@@ -78,7 +80,7 @@ export async function uploadImageToSupabase(
   onProgress?.(30);
 
   // Upload file to Supabase storage bucket
-  const { data, error } = await supabase.storage.from(bucketName).upload(filePath, file, {
+  const { data, error } = await supabase.storage.from(bucketName).upload(filePath, normalized, {
     cacheControl: '3600',
     upsert: true,
   });
@@ -89,7 +91,7 @@ export async function uploadImageToSupabase(
     console.warn('Storage upload error in product-images bucket, trying products bucket:', error.message);
     // Fallback attempt to bucket named 'products'
     bucketName = 'products';
-    const altRes = await supabase.storage.from(bucketName).upload(filePath, file, {
+    const altRes = await supabase.storage.from(bucketName).upload(filePath, normalized, {
       cacheControl: '3600',
       upsert: true,
     });

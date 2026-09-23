@@ -1,3 +1,5 @@
+import { normalizeSquareImage } from './image-normalize';
+
 import type { AuthResponse, User } from '@supabase/supabase-js';
 import type { Banner, Product, PromoCard, Tag } from '../types';
 import { getSupabaseClient } from '../config/supabase';
@@ -184,9 +186,10 @@ export async function upsertCategory(category: Pick<RemoteCategory, 'name' | 'de
 }
 
 export async function uploadCategoryImage(file: File) {
-  const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+  const normalized = await normalizeSquareImage(file);
+  const extension = 'jpg';
   const path = `categories/category-${crypto.randomUUID()}.${extension}`;
-  const { error } = await supabase().storage.from('brand-assets').upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+  const { error } = await supabase().storage.from('brand-assets').upload(path, normalized, { cacheControl: '3600', upsert: false, contentType: normalized.type });
   if (error) throw error;
   return supabase().storage.from('brand-assets').getPublicUrl(path).data.publicUrl;
 }
@@ -254,10 +257,11 @@ export async function deleteProduct(id: string | number) {
 }
 
 export async function uploadProductImage(file: File, onProgress?: (progress: number) => void) {
-  const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+  const normalized = await normalizeSquareImage(file);
+  const extension = 'jpg';
   const path = `${crypto.randomUUID()}.${extension}`;
   onProgress?.(20);
-  const { error } = await supabase().storage.from('product-images').upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type });
+  const { error } = await supabase().storage.from('product-images').upload(path, normalized, { cacheControl: '3600', upsert: false, contentType: normalized.type });
   if (error) throw error;
   onProgress?.(80);
   const { data } = supabase().storage.from('product-images').getPublicUrl(path);
