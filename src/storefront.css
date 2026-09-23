@@ -423,3 +423,8 @@
 .homepage-grid-block { margin: 0 auto; max-width: 1320px; padding: 70px 44px 110px; }
 .homepage-product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
 @media (max-width: 800px) { .homepage-grid-block { padding: 55px 22px 80px; } .homepage-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 14px; } }
+
+.homepage-product-block-empty { padding-bottom: 42px; padding-top: 42px; }
+.homepage-product-block-empty .section-heading { margin-bottom: 18px; }
+.homepage-product-block-empty .store-loading { margin: 0; min-height: 0; padding: 12px 0 0; }
+@media (max-width: 680px) { .homepage-product-block-empty { padding-bottom: 34px; padding-top: 30px; } .homepage-product-block-empty .section-heading h2 { font-size: 34px; line-height: 1.05; } }
