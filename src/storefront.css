@@ -483,3 +483,15 @@
 .store-product-meta h3 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; line-clamp: 1; min-height: 1.45em; overflow: hidden; text-overflow: ellipsis; white-space: normal; }
 .store-product-meta .product-price { min-height: 1.5em; }
 @media (max-width: 680px) { .product-image-tags { max-width: 68%; right: 7px; top: 7px; } .product-image-tags span { font-size: 8px; padding: 6px 7px; } .store-product-meta h3 { min-height: 1.5em; } }
+
+/* Keep the next product cards close to an empty collection heading. */
+.homepage-product-block-empty { padding-bottom: 8px; padding-top: 24px; }
+.homepage-product-block-empty .section-heading { margin-bottom: 10px; }
+.homepage-product-block-empty .store-loading { padding: 4px 0 0; }
+.homepage-product-block-empty + .homepage-product-block,
+.homepage-product-block-empty + .homepage-grid-block { padding-top: 18px; }
+@media (max-width: 680px) {
+  .homepage-product-block-empty { padding-bottom: 6px; padding-top: 18px; }
+  .homepage-product-block-empty + .homepage-product-block,
+  .homepage-product-block-empty + .homepage-grid-block { padding-top: 14px; }
+}
