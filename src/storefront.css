@@ -495,3 +495,16 @@
   .homepage-product-block-empty + .homepage-product-block,
   .homepage-product-block-empty + .homepage-grid-block { padding-top: 14px; }
 }
+
+/* Controlled product carousels: arrows plus one-card advancement every two seconds. */
+.homepage-carousel-shell { position: relative; width: 100%; }
+.homepage-controlled-track { animation: none; overflow-x: auto; padding: 0 42px 10px; scroll-behavior: smooth; scrollbar-width: none; width: 100%; }
+.homepage-controlled-track::-webkit-scrollbar { display: none; }
+.homepage-carousel-arrow { align-items: center; background: #151515; border: 1px solid #151515; border-radius: 50%; color: #fff; cursor: pointer; display: flex; height: 38px; justify-content: center; position: absolute; top: calc(50% - 28px); width: 38px; z-index: 3; }
+.homepage-carousel-arrow:hover { background: #fff; color: #151515; }
+.homepage-carousel-arrow svg { pointer-events: none; }
+.homepage-carousel-arrow-left { left: 0; }
+.homepage-carousel-arrow-right { right: 0; }
+.homepage-carousel-arrow-left svg { transform: rotate(90deg); }
+.homepage-carousel-arrow-right svg { transform: rotate(-90deg); }
+@media (max-width: 680px) { .homepage-controlled-track { gap: 14px; padding-left: 34px; padding-right: 34px; } .homepage-controlled-track .store-product { flex-basis: calc((100vw - 58px) / 2); } .homepage-carousel-arrow { height: 32px; width: 32px; } }
