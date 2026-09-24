@@ -508,3 +508,14 @@
 .homepage-carousel-arrow-left svg { transform: rotate(90deg); }
 .homepage-carousel-arrow-right svg { transform: rotate(-90deg); }
 @media (max-width: 680px) { .homepage-controlled-track { gap: 14px; padding-left: 34px; padding-right: 34px; } .homepage-controlled-track .store-product { flex-basis: calc((100vw - 58px) / 2); } .homepage-carousel-arrow { height: 32px; width: 32px; } }
+
+/* Center homepage collection headings and piece counts. */
+.collection .collection-simple-title { margin-left: auto; margin-right: auto; text-align: center; width: 100%; }
+.homepage-product-block .section-heading,
+.homepage-grid-block .section-heading { align-items: center; flex-direction: column; justify-content: center; text-align: center; }
+.homepage-product-block .section-heading > div,
+.homepage-grid-block .section-heading > div { align-items: center; display: flex; flex-direction: column; text-align: center; width: 100%; }
+.homepage-product-block .section-heading h2,
+.homepage-grid-block .section-heading h2 { margin-left: auto; margin-right: auto; text-align: center; }
+.homepage-product-block .section-heading .piece-count,
+.homepage-grid-block .section-heading .piece-count { margin-top: 8px; text-align: center; }
