@@ -19,7 +19,6 @@ function ProductCard({ product, onAdd, onView }: { product: Product; onAdd: (pro
     <div className="product-visual" role="button" tabIndex={0} onClick={() => onView(product)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onView(product); } }} aria-label={`View ${product.name}`}>
       {product.image_url ? <img src={product.image_url} alt={product.name} /> : <div className="no-image">C<span>•</span>S</div>}
       {hasSale && <span className="sale-badge">-{discountPercent}% OFF</span>}
-      {product.tags && product.tags.length > 0 && <div className="product-image-tags" aria-label="Product tags">{product.tags.map(tag => <span key={tag}>{tag}</span>)}</div>}
     </div>
     <div className="store-product-meta">
       <h3>{product.name}</h3>
