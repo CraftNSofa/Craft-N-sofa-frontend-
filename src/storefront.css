@@ -525,3 +525,15 @@
   .homepage-carousel-shell { margin-left: -22px; margin-right: -22px; width: calc(100% + 44px); }
   .homepage-controlled-track { padding-left: 0; padding-right: 0; }
 }
+
+/* Desktop product rows always show four complete cards. */
+.homepage-controlled-track .store-product { flex: 0 0 calc((100% - 66px) / 4); }
+.category-page-products .store-grid,
+.all-products-grid .store-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 800px) {
+  .category-page-products .store-grid,
+  .all-products-grid .store-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 680px) {
+  .homepage-controlled-track .store-product { flex-basis: calc((100vw - 58px) / 2); }
+}
