@@ -87,12 +87,12 @@ export type StoreContentBlockKind = 'html' | 'main-banner' | 'banner' | 'tag-car
 export type StoreContentBlock = { id: string; kind?: StoreContentBlockKind; title: string; html: string; css: string; image_url: string | null; mobile_image_url?: string | null; image_title: string; tag_name?: string; tag_names?: string[]; active: boolean; sort_order: number; created_at?: string; updated_at?: string };
 export type StoreBranding = { id: string; logo_url: string | null; custom_html: string; custom_css: string; secondary_image_url: string | null; secondary_image_title: string; product_banner_url: string | null; product_banner_title: string; content_blocks: StoreContentBlock[]; promo_cards: PromoCard[]; updated_at: string };
 
-const defaultStoreBranding = (): StoreBranding => ({ id: 'default', logo_url: null, custom_html: '', custom_css: '', secondary_image_url: null, secondary_image_title: 'Craft N Sofa collection', product_banner_url: null, product_banner_title: 'L-Shaped Corner Set', content_blocks: [], promo_cards: [], updated_at: new Date(0).toISOString() });
+const defaultStoreBranding = (): StoreBranding => ({ id: 'default', logo_url: null, custom_html: '', custom_css: '', secondary_image_url: null, secondary_image_title: 'Craft N Sofa collection', product_banner_url: null, product_banner_title: 'L-Shaped Corner and Sofa Set', content_blocks: [], promo_cards: [], updated_at: new Date(0).toISOString() });
 const normalizeStoreBranding = (data: Record<string, unknown> | null): StoreBranding => {
   if (!data) return defaultStoreBranding();
   const storedBlocks = Array.isArray(data.content_blocks) ? data.content_blocks as StoreContentBlock[] : [];
   const legacyBlock: StoreContentBlock[] = storedBlocks.length || !String(data.custom_html || '').trim() ? [] : [{ id: 'legacy-custom-content', title: 'Homepage block', html: String(data.custom_html || ''), css: String(data.custom_css || ''), image_url: null, image_title: '', active: true, sort_order: 0 }];
-  return { ...defaultStoreBranding(), ...data, secondary_image_title: String(data.secondary_image_title || 'Craft N Sofa collection'), product_banner_url: data.product_banner_url ? String(data.product_banner_url) : null, product_banner_title: String(data.product_banner_title || 'L-Shaped Corner Set'), content_blocks: storedBlocks.length ? storedBlocks : legacyBlock, promo_cards: Array.isArray(data.promo_cards) ? data.promo_cards as PromoCard[] : [] } as StoreBranding;
+  return { ...defaultStoreBranding(), ...data, secondary_image_title: String(data.secondary_image_title || 'Craft N Sofa collection'), product_banner_url: data.product_banner_url ? String(data.product_banner_url) : null, product_banner_title: String(data.product_banner_title || 'L-Shaped Corner and Sofa Set'), content_blocks: storedBlocks.length ? storedBlocks : legacyBlock, promo_cards: Array.isArray(data.promo_cards) ? data.promo_cards as PromoCard[] : [] } as StoreBranding;
 };
 
 export async function loadStoreBranding(): Promise<StoreBranding> {
@@ -140,7 +140,7 @@ export async function uploadStoreProductBanner(file: File, previousUrl?: string 
 }
 
 export async function saveStoreProductBannerTitle(title: string) {
-  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', product_banner_title: title.trim() || 'L-Shaped Corner Set', updated_at: new Date().toISOString() }).select(brandingFields).single();
+  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', product_banner_title: title.trim() || 'L-Shaped Corner and Sofa Set', updated_at: new Date().toISOString() }).select(brandingFields).single();
   if (error) throw error;
   return normalizeStoreBranding(data as Record<string, unknown>);
 }
