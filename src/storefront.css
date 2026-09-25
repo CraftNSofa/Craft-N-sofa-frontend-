@@ -562,3 +562,8 @@
 
 .banner-category-products { margin: 28px auto 0; max-width: 1320px; padding: 0 44px 40px; }
 @media (max-width: 680px) { .banner-category-products { margin-top: 20px; padding: 0 22px 28px; } }
+
+/* Reusable homepage block headings use the same typography as the banner title. */
+.homepage-product-block .section-heading h2,
+.homepage-grid-block .section-heading h2 { color: #141414; font-family: 'Playfair Display', Georgia, serif; font-size: clamp(24px, 3vw, 38px); font-weight: 500; letter-spacing: normal; line-height: 1.1; }
+@media (max-width: 680px) { .homepage-product-block .section-heading h2, .homepage-grid-block .section-heading h2 { font-size: 28px; } }
