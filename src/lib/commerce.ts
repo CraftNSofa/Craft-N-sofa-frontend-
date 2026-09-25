@@ -85,14 +85,14 @@ export async function loadCategories(): Promise<RemoteCategory[]> {
 
 export type StoreContentBlockKind = 'html' | 'main-banner' | 'banner' | 'tag-carousel' | 'product-carousel' | 'product-grid';
 export type StoreContentBlock = { id: string; kind?: StoreContentBlockKind; title: string; html: string; css: string; image_url: string | null; mobile_image_url?: string | null; image_title: string; tag_name?: string; tag_names?: string[]; active: boolean; sort_order: number; created_at?: string; updated_at?: string };
-export type StoreBranding = { id: string; logo_url: string | null; custom_html: string; custom_css: string; secondary_image_url: string | null; secondary_image_title: string; content_blocks: StoreContentBlock[]; promo_cards: PromoCard[]; updated_at: string };
+export type StoreBranding = { id: string; logo_url: string | null; custom_html: string; custom_css: string; secondary_image_url: string | null; secondary_image_title: string; product_banner_url: string | null; content_blocks: StoreContentBlock[]; promo_cards: PromoCard[]; updated_at: string };
 
-const defaultStoreBranding = (): StoreBranding => ({ id: 'default', logo_url: null, custom_html: '', custom_css: '', secondary_image_url: null, secondary_image_title: 'Craft N Sofa collection', content_blocks: [], promo_cards: [], updated_at: new Date(0).toISOString() });
+const defaultStoreBranding = (): StoreBranding => ({ id: 'default', logo_url: null, custom_html: '', custom_css: '', secondary_image_url: null, secondary_image_title: 'Craft N Sofa collection', product_banner_url: null, content_blocks: [], promo_cards: [], updated_at: new Date(0).toISOString() });
 const normalizeStoreBranding = (data: Record<string, unknown> | null): StoreBranding => {
   if (!data) return defaultStoreBranding();
   const storedBlocks = Array.isArray(data.content_blocks) ? data.content_blocks as StoreContentBlock[] : [];
   const legacyBlock: StoreContentBlock[] = storedBlocks.length || !String(data.custom_html || '').trim() ? [] : [{ id: 'legacy-custom-content', title: 'Homepage block', html: String(data.custom_html || ''), css: String(data.custom_css || ''), image_url: null, image_title: '', active: true, sort_order: 0 }];
-  return { ...defaultStoreBranding(), ...data, secondary_image_title: String(data.secondary_image_title || 'Craft N Sofa collection'), content_blocks: storedBlocks.length ? storedBlocks : legacyBlock, promo_cards: Array.isArray(data.promo_cards) ? data.promo_cards as PromoCard[] : [] } as StoreBranding;
+  return { ...defaultStoreBranding(), ...data, secondary_image_title: String(data.secondary_image_title || 'Craft N Sofa collection'), product_banner_url: data.product_banner_url ? String(data.product_banner_url) : null, content_blocks: storedBlocks.length ? storedBlocks : legacyBlock, promo_cards: Array.isArray(data.promo_cards) ? data.promo_cards as PromoCard[] : [] } as StoreBranding;
 };
 
 export async function loadStoreBranding(): Promise<StoreBranding> {
@@ -129,6 +129,20 @@ export async function uploadSecondaryStoreImage(file: File, previousUrl?: string
   const publicUrl = await uploadStoreContentImage(file, previousUrl);
   const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', secondary_image_url: publicUrl, secondary_image_title: title.trim() || 'Craft N Sofa collection', updated_at: new Date().toISOString() }).select(brandingFields).single();
   if (error) throw error;
+  return normalizeStoreBranding(data as Record<string, unknown>);
+}
+
+export async function uploadStoreProductBanner(file: File, previousUrl?: string | null) {
+  const publicUrl = await uploadStoreContentImage(file, previousUrl);
+  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', product_banner_url: publicUrl, updated_at: new Date().toISOString() }).select(brandingFields).single();
+  if (error) throw error;
+  return normalizeStoreBranding(data as Record<string, unknown>);
+}
+
+export async function clearStoreProductBanner(previousUrl?: string | null) {
+  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', product_banner_url: null, updated_at: new Date().toISOString() }).select(brandingFields).single();
+  if (error) throw error;
+  await deleteStoreContentImage(previousUrl);
   return normalizeStoreBranding(data as Record<string, unknown>);
 }
 
@@ -317,7 +331,7 @@ export async function createStorefrontOrder(input: { customerName: string; custo
 }
 
 
-const brandingFields = 'id,logo_url,custom_html,custom_css,secondary_image_url,secondary_image_title,content_blocks,promo_cards,updated_at';
+const brandingFields = 'id,logo_url,custom_html,custom_css,secondary_image_url,secondary_image_title,product_banner_url,content_blocks,promo_cards,updated_at';
 
 export async function savePromoCards(cards: PromoCard[]) {
   const normalized = cards.map((card, index) => ({ ...card, sort_order: index }));
