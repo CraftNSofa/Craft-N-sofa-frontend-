@@ -545,3 +545,10 @@
 .product-carousel-banner { margin: 18px auto 0; max-width: 1500px; overflow: hidden; width: 100%; }
 .product-carousel-banner img { aspect-ratio: 3 / 1; display: block; height: auto; object-fit: contain; width: 100%; }
 @media (max-width: 680px) { .product-carousel-banner { margin-top: 12px; } }
+
+/* Product banner edges align with the surrounding product section. */
+.homepage-product-block .product-carousel-banner { border: 0; border-radius: 0; margin-left: -44px; margin-right: -44px; max-width: none; width: calc(100% + 88px); }
+.legacy-product-banner { border: 0; border-radius: 0; }
+@media (max-width: 680px) {
+  .homepage-product-block .product-carousel-banner { margin-left: -22px; margin-right: -22px; width: calc(100% + 44px); }
+}
