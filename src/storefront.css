@@ -559,3 +559,6 @@
 /* Match the main Double Bed heading to the banner title typography. */
 .collection .collection-simple-title { color: #141414; font-family: 'Playfair Display', Georgia, serif; font-size: clamp(24px, 3vw, 38px); font-weight: 500; letter-spacing: normal; line-height: 1.1; margin-bottom: 42px; }
 @media (max-width: 680px) { .collection .collection-simple-title { font-size: 28px; } }
+
+.banner-category-products { margin: 28px auto 0; max-width: 1320px; padding: 0 44px 40px; }
+@media (max-width: 680px) { .banner-category-products { margin-top: 20px; padding: 0 22px 28px; } }
