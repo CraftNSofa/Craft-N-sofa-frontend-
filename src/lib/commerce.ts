@@ -16,6 +16,15 @@ export async function signInAdmin(email: string, password: string): Promise<Auth
   return supabase().auth.signInWithPassword({ email: email.trim(), password });
 }
 
+export async function signInAdminWithGoogle() {
+  return supabase().auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${window.location.origin}${window.location.pathname}`,
+    },
+  });
+}
+
 export async function signOutAdmin() {
   await supabase().auth.signOut();
 }
