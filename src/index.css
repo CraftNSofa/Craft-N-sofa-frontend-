@@ -275,3 +275,7 @@
 
 .sidebar .logout-label { color: #9b4f4f; font-size: 10px; font-weight: 700; margin-left: auto; }
 .sidebar .logout:hover .logout-label { color: #b43d4d; }
+
+.forgot-password { align-self: flex-end; background: transparent; color: #63368e; font-size: .75rem; font-weight: 700; margin: -7px 0 2px; padding: 0; }
+.forgot-password:hover { color: #40215f; text-decoration: underline; }
+.forgot-password:disabled { cursor: wait; opacity: .6; }

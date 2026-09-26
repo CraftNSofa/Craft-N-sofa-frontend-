@@ -25,6 +25,12 @@ export async function signInAdminWithGoogle() {
   });
 }
 
+export async function sendAdminPasswordReset(email: string) {
+  return supabase().auth.resetPasswordForEmail(email.trim(), {
+    redirectTo: `${window.location.origin}${window.location.pathname}`,
+  });
+}
+
 export async function signOutAdmin() {
   await supabase().auth.signOut();
 }
