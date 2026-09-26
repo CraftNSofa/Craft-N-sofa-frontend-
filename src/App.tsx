@@ -17,6 +17,7 @@ import {
   Edit3,
   ImagePlus,
   LayoutDashboard,
+  LogOut,
   Menu,
   Package,
   Plus,
@@ -241,7 +242,7 @@ function App() {
       <div className="brand">{brandLogoUrl ? <img className="admin-brand-logo" src={brandLogoUrl} alt="Craft N Sofa" /> : <div className="brand-mark">C<span>•</span>S</div>}<div><b>Craft N Sofa</b><small>Admin workspace</small></div><button className="close-nav" onClick={() => setMobileNav(false)}><X size={18} /></button></div>
       <div className="workspace-label">WORKSPACE</div>
       <nav>{nav.map(item => <button key={item.id} className={tab === item.id ? 'nav-item active' : 'nav-item'} onClick={() => { setTab(item.id); setMobileNav(false); if (item.id === 'add-product') openNewProduct(); if (item.id === 'add-category') setCategoryModal(true); if (item.id === 'add-tag') setTagModal(true); }}><item.icon size={18} /><span>{item.label}</span>{'badge' in item && item.badge ? <em>{item.badge}</em> : null}</button>)}</nav>
-      <div className="sidebar-bottom"><div className="help-card"><div className="help-icon"><Bell size={17} /></div><b>Stay on top of orders</b><p>Turn on notifications when connecting your live store.</p></div><button className="nav-item logout" onClick={logout}><span className="avatar">AM</span><span className="user-name">Admin Manager</span><ChevronDown size={15} /></button></div>
+      <div className="sidebar-bottom"><div className="help-card"><div className="help-icon"><Bell size={17} /></div><b>Stay on top of orders</b><p>Turn on notifications when connecting your live store.</p></div><button className="nav-item logout" onClick={logout}><span className="avatar">AM</span><span className="user-name">Admin Manager</span><span className="logout-label">Log out</span><LogOut size={15} /></button></div>
     </aside>
     <main className="main-content">
       <header className="topbar"><button className="menu-button" onClick={() => setMobileNav(true)}><Menu size={21} /></button><div><div className="eyebrow">SATURDAY, AUGUST 15, 2026</div><h1>{nav.find(n => n.id === tab)?.label}</h1></div><div className="top-actions"><div className="store-status"><span /> Store is live <small>●</small></div><button className="icon-button"><Bell size={18} /></button><div className="top-avatar">AM</div></div></header>
