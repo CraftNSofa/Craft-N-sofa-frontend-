@@ -47,7 +47,7 @@ function ProductCarousel({ products, onAdd, onView }: { products: Product[]; onA
   useEffect(() => { const timer = window.setInterval(() => move(1), 2000); return () => window.clearInterval(timer); }, [products.length]);
   return <div className="homepage-carousel-shell"><button type="button" className="homepage-carousel-arrow homepage-carousel-arrow-left" onClick={() => move(-1)} aria-label="Previous products"><ChevronDown size={18} /></button><div ref={trackRef} className="store-grid homepage-product-track homepage-controlled-track">{repeated.map((product, index) => <ProductCard key={`${String(product.id)}-${index}`} product={product} onAdd={onAdd} onView={onView} />)}</div><button type="button" className="homepage-carousel-arrow homepage-carousel-arrow-right" onClick={() => move(1)} aria-label="Next products"><ChevronDown size={18} /></button></div>;
 }
-function hasLShapedTag(product: Product) { return (product.tags || []).some(tag => /l[\s-]*shaped/i.test(tag)); }
+function hasLShapedTag(product: Product) { return (product.tags || []).some(tag => /l[\s-]*shaped|corner[\s-]*set/i.test(tag)); }
 function BannerCategoryProducts({ title, products, onAdd, onView }: { title: string; products: Product[]; onAdd: (product: Product) => void; onView: (product: Product) => void }) {
   if (!title || !products.length) return null;
   return <section className="banner-category-products" aria-label={`${title} products`}><ProductCarousel products={products} onAdd={onAdd} onView={onView} /></section>;
