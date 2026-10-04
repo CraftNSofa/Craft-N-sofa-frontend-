@@ -49,7 +49,7 @@ function ProductCarousel({ products, onAdd, onView }: { products: Product[]; onA
 }
 function hasLShapedTag(product: Product) { return (product.tags || []).some(tag => /l[\s-]*shaped|corner[\s-]*set/i.test(tag)); }
 function isCornerSetProduct(product: Product) { const searchable = [product.name, product.category, ...(product.tags || [])].filter(Boolean).join(' ').toLowerCase(); return /l[\s-]*shaped|corner/.test(searchable); }
-function isDoubleBedProduct(product: Product) { return isDoubleBedProduct(product); }
+function isDoubleBedProduct(product: Product) { return (product.tags || []).some(tag => tag.trim().toLowerCase() === 'double bed and sofa cumbed') && !isCornerSetProduct(product); }
 function BannerCategoryProducts({ title, products, onAdd, onView }: { title: string; products: Product[]; onAdd: (product: Product) => void; onView: (product: Product) => void }) {
   if (!title || !products.length) return null;
   return <section className="banner-category-products" aria-label={`${title} products`}><ProductCarousel products={products} onAdd={onAdd} onView={onView} /></section>;
