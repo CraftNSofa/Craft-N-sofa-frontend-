@@ -140,10 +140,12 @@ export default function Storefront() {
   }, [activeCategory, products, searchTerm]);
 
   const carouselProducts = useMemo(() => {
-    if (!filtered.length) return [];
-    const visibleSet = filtered.length < 4 ? Array.from({ length: 4 }, () => filtered).flat() : filtered;
-    return [...visibleSet, ...visibleSet];
-  }, [filtered]);
+    const homepageDoubleBedProducts = products.filter(product => (product.tags || []).some(tag => tag.trim().toLowerCase() === 'double bed and sofa cumbed'));
+    const sourceProducts = !isCategoryPage && !isProductsPage && activeCategory === 'All pieces' ? homepageDoubleBedProducts : filtered;
+    if (!sourceProducts.length) return [];
+    const visibleSet = sourceProducts;
+    return visibleSet.length > 4 ? [...visibleSet, ...visibleSet] : visibleSet;
+  }, [activeCategory, filtered, isCategoryPage, isProductsPage, products]);
 
   const moveCollection = (direction: 1 | -1) => {
     const row = collectionGridRef.current;
