@@ -31,8 +31,8 @@ function ProductCard({ product, onAdd, onView }: { product: Product; onAdd: (pro
 
 function ProductCarousel({ products, onAdd, onView }: { products: Product[]; onAdd: (product: Product) => void; onView: (product: Product) => void }) {
   const trackRef = useRef<HTMLDivElement>(null);
-  const slides = products.length < 4 ? Array.from({ length: 4 }, () => products).flat() : products;
-  const repeated = [...slides, ...slides];
+  const slides = products;
+  const repeated = slides.length > 4 ? [...slides, ...slides] : slides;
   const move = (direction: 1 | -1) => {
     const track = trackRef.current;
     const firstCard = track?.querySelector<HTMLElement>('.store-product');
