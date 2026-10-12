@@ -414,7 +414,7 @@
 .tag-choice.selected { background: #151515; border-color: #151515; color: #fff; }
 
 /* Reusable homepage product carousel blocks */
-.homepage-product-block { margin: 0 auto; max-width: 1320px; overflow: hidden; padding: 70px 44px; }
+.homepage-product-block { margin: 0 auto; max-width: 1320px; overflow: visible; padding: 70px 44px; }
 .homepage-product-track { animation: craft-sofa-marquee 36s linear infinite; display: flex; flex-wrap: nowrap; gap: 22px; overflow: visible; width: max-content; }
 .homepage-product-track .store-product { flex: 0 0 clamp(220px, 22vw, 316px); }
 @media (max-width: 680px) { .homepage-product-block { padding: 55px 22px; } .homepage-product-track { gap: 14px; } .homepage-product-track .store-product { flex-basis: min(42vw, 190px); } }
@@ -547,7 +547,7 @@
 @media (max-width: 680px) { .product-carousel-banner { margin-top: 12px; } }
 
 /* Product banner edges align with the surrounding product section. */
-.homepage-product-block .product-carousel-banner { border: 0; border-radius: 0; margin-left: -44px; margin-right: -44px; max-width: none; width: calc(100% + 88px); }
+.homepage-product-block .product-carousel-banner { border: 0; border-radius: 0; margin-left: calc(50% - 50vw); margin-right: 0; max-width: none; width: 100vw; }
 .legacy-product-banner { border: 0; border-radius: 0; }
 @media (max-width: 680px) {
   .homepage-product-block .product-carousel-banner { margin-left: -22px; margin-right: -22px; width: calc(100% + 44px); }
