@@ -77,10 +77,10 @@
   .store-logo img { max-width: 165px; max-height: 58px; }
 }
 
-/* Storefront banner carousel */
-.store-banner-carousel { position: relative; width: 100%; aspect-ratio: 3 / 1; min-height: 0; max-height: 560px; overflow: hidden; background: #eeece7; }
+/* Storefront banner carousel: keep the 1500×500 desktop artwork uncropped at every desktop zoom. */
+.store-banner-carousel { position: relative; width: 100%; aspect-ratio: 3 / 1; min-height: 0; overflow: hidden; background: #eeece7; }
 .store-carousel-slide { position: absolute; inset: 0; display: block; width: 100%; height: 100%; background: #eeece7; opacity: 0; transition: opacity 650ms ease; }
-.store-carousel-slide img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.store-carousel-slide img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .store-carousel-slide.active { opacity: 1; }
 .store-carousel-controls { position: absolute; left: 50%; bottom: 22px; z-index: 2; display: flex; gap: 8px; transform: translateX(-50%); }
 .store-carousel-controls button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: rgba(255,255,255,.55); cursor: pointer; transition: width 180ms ease, background 180ms ease; }
