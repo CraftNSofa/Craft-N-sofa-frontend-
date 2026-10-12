@@ -414,7 +414,7 @@
 .tag-choice.selected { background: #151515; border-color: #151515; color: #fff; }
 
 /* Reusable homepage product carousel blocks */
-.homepage-product-block { margin: 0 auto; max-width: 1320px; overflow: visible; padding: 70px 44px; }
+.homepage-product-block { margin: 0 auto; max-width: none; overflow: visible; padding: 70px 44px; }
 .homepage-product-track { animation: craft-sofa-marquee 36s linear infinite; display: flex; flex-wrap: nowrap; gap: 22px; overflow: visible; width: max-content; }
 .homepage-product-track .store-product { flex: 0 0 clamp(220px, 22vw, 316px); }
 @media (max-width: 680px) { .homepage-product-block { padding: 55px 22px; } .homepage-product-track { gap: 14px; } .homepage-product-track .store-product { flex-basis: min(42vw, 190px); } }
