@@ -125,6 +125,7 @@
 
 /* Dedicated category page */
 .category-page { margin: 0 auto; max-width: 1320px; padding: 24px 44px 130px; }
+.all-products-page { max-width: none; }
 .category-page-breadcrumb { align-items: center; color: #8a8882; display: flex; font-size: 11px; gap: 8px; letter-spacing: .04em; margin-bottom: 54px; }
 .category-page-breadcrumb a { color: #333; text-decoration: none; }
 .category-page-breadcrumb a:hover { text-decoration: underline; }
@@ -560,7 +561,7 @@
 .collection .collection-simple-title { color: #141414; font-family: 'Playfair Display', Georgia, serif; font-size: clamp(24px, 3vw, 38px); font-weight: 500; letter-spacing: normal; line-height: 1.1; margin-bottom: 42px; }
 @media (max-width: 680px) { .collection .collection-simple-title { font-size: 28px; } }
 
-.banner-category-products { margin: 28px auto 0; max-width: 1320px; padding: 0 44px 40px; }
+.banner-category-products { margin: 28px auto 0; max-width: none; padding: 0 44px 40px; }
 @media (max-width: 680px) { .banner-category-products { margin-top: 20px; padding: 0 22px 28px; } }
 
 /* Reusable homepage block headings use the same typography as the banner title. */
