@@ -564,6 +564,12 @@
 .banner-category-products { margin: 28px auto 0; max-width: none; padding: 0 44px 40px; }
 @media (max-width: 680px) { .banner-category-products { margin-top: 20px; padding: 0 22px 28px; } }
 
+/* The L-Shaped row sits inside a padded homepage block; avoid applying that side padding twice. */
+.homepage-product-block .banner-category-products { margin-left: -44px; margin-right: -44px; padding-left: 0; padding-right: 0; width: calc(100% + 88px); }
+@media (max-width: 680px) {
+  .homepage-product-block .banner-category-products { margin-left: -22px; margin-right: -22px; padding-left: 0; padding-right: 0; width: calc(100% + 44px); }
+}
+
 /* Reusable homepage block headings use the same typography as the banner title. */
 .homepage-product-block .section-heading h2,
 .homepage-grid-block .section-heading h2 { color: #141414; font-family: 'Playfair Display', Georgia, serif; font-size: clamp(24px, 3vw, 38px); font-weight: 500; letter-spacing: normal; line-height: 1.1; }
