@@ -59,9 +59,13 @@ function BannerCategoryProducts({ title, products, onAdd, onView }: { title: str
 function ProductQuickView({ product, onAdd, onClose }: { product: Product; onAdd: (product: Product) => void; onClose: () => void }) {
   const gallery = Array.from(new Set([product.image_url, ...(product.images || [])].filter(Boolean))) as string[];
   const [activeImage, setActiveImage] = useState(gallery[0] || '');
+  const [quantity, setQuantity] = useState(1);
+  const [showDetails, setShowDetails] = useState(false);
   const originalPrice = Number(product.original_price || product.price || 0);
   const currentPrice = Number(product.discount_price ?? product.price ?? 0);
   const hasSale = product.discount_price !== null && currentPrice < originalPrice;
+  const savings = Math.max(0, originalPrice - currentPrice);
+  const discountPercent = hasSale && originalPrice > 0 ? Math.round((savings / originalPrice) * 100) : 0;
 
   return <div className="product-modal-backdrop" onClick={onClose}>
     <section className="product-modal" role="dialog" aria-modal="true" aria-label={`${product.name} details`} onClick={(event) => event.stopPropagation()}>
@@ -70,7 +74,18 @@ function ProductQuickView({ product, onAdd, onClose }: { product: Product; onAdd
         <div className="product-modal-main-image">{activeImage ? <img src={activeImage} alt={product.name} /> : <div className="no-image">C<span>•</span>S</div>}</div>
         {gallery.length > 1 && <div className="product-modal-thumbnails">{gallery.map((image, index) => <button key={image} className={image === activeImage ? 'active' : ''} onClick={() => setActiveImage(image)} aria-label={`View product image ${index + 1}`}><img src={image} alt={`${product.name} ${index + 1}`} /></button>)}</div>}
       </div>
-      <div className="product-modal-copy"><span className="store-kicker">{product.category || 'CRAFT N SOFA'}</span><h2>{product.name}</h2>{product.tags && product.tags.length > 0 && <div className="product-tags product-modal-tags" aria-label="Product tags">{product.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>}<div className="product-price">{hasSale && <del>{money(originalPrice)}</del>}<strong>{money(currentPrice)}</strong></div>{product.description && <p>{product.description}</p>}<button className="store-button dark product-detail-cart" onClick={() => onAdd(product)}>Add to cart <ShoppingCart size={16} /></button></div>
+      <div className="product-modal-copy">
+        <span className="store-kicker">{product.category || 'CRAFT N SOFA'}</span>
+        <h2>{product.name}</h2>
+        <div className="product-detail-price-row"><strong>{money(currentPrice)}</strong>{hasSale && <del>{money(originalPrice)}</del>}{hasSale && <span className="product-detail-saving">Save {money(savings)} ({discountPercent}%)</span>}</div>
+        {product.tags && product.tags.length > 0 && <div className="product-tags product-modal-tags" aria-label="Product tags">{product.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>}
+        <div className="product-customization"><label htmlFor="product-customization">Customization</label><select id="product-customization" defaultValue="Customization"><option value="Customization">Customization</option></select></div>
+        <div className="product-quantity-stock"><div className="product-quantity-control" aria-label="Quantity"><button type="button" onClick={() => setQuantity(value => Math.max(1, value - 1))} aria-label="Decrease quantity">−</button><span>{quantity}</span><button type="button" onClick={() => setQuantity(value => value + 1)} aria-label="Increase quantity">+</button></div><span className="product-stock">In Stock</span></div>
+        <div className="product-purchase-actions"><button className="product-detail-add" onClick={() => { onAdd(product); onClose(); }}>Add to cart</button><button className="product-detail-buy" onClick={() => { onAdd(product); onClose(); }}>Buy now</button></div>
+        <button className="product-advance-order" onClick={() => { onAdd(product); onClose(); }}>Order with Advance 20% Off</button>
+        <button className="product-view-detail" onClick={() => setShowDetails(value => !value)}>{showDetails ? 'Hide detail' : 'View detail'} <ChevronDown size={16} className={showDetails ? 'open' : ''} /></button>
+        {showDetails && <div className="product-detail-description">{product.description || 'Premium Craft N Sofa furniture made for comfort, durability, and everyday living.'}</div>}
+      </div>
     </section>
   </div>;
 }
