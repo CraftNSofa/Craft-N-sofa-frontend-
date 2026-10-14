@@ -586,3 +586,95 @@
 @media (prefers-reduced-motion: reduce) {
   .product-image-primary, .product-image-secondary { transition: none; }
 }
+
+/* Reference-style homepage product cards: balanced spacing, badges, and aligned actions. */
+.homepage-product-block .store-product,
+.homepage-grid-block .store-product,
+.collection .store-product {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 7px 20px rgba(20, 20, 20, .08);
+  overflow: hidden;
+}
+.homepage-product-block .product-visual,
+.homepage-grid-block .product-visual,
+.collection .product-visual {
+  border-radius: 24px 24px 0 0;
+  aspect-ratio: 1 / 1;
+  height: auto;
+}
+.homepage-product-block .store-product-meta,
+.homepage-grid-block .store-product-meta,
+.collection .store-product-meta {
+  align-items: flex-start;
+  display: grid;
+  gap: 0;
+  min-height: 142px;
+  padding: 14px 16px 16px;
+  position: relative;
+  text-align: left;
+}
+.homepage-product-block .store-product-meta h3,
+.homepage-grid-block .store-product-meta h3,
+.collection .store-product-meta h3 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(15px, 1.55vw, 21px);
+  font-weight: 400;
+  line-height: 1.25;
+  margin: 6px 0 13px;
+  max-width: calc(100% - 62px);
+  text-align: left;
+}
+.homepage-product-block .store-product-meta .product-price,
+.homepage-grid-block .store-product-meta .product-price,
+.collection .store-product-meta .product-price {
+  align-items: baseline;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+  min-height: 28px;
+  text-align: left;
+  width: auto;
+}
+.homepage-product-block .product-price del,
+.homepage-grid-block .product-price del,
+.collection .product-price del { color: #555; font-size: 14px; }
+.homepage-product-block .product-price strong,
+.homepage-grid-block .product-price strong,
+.collection .product-price strong { color: #b85f54; font-size: 18px; font-weight: 500; }
+.product-card-actions { display: flex; flex-direction: column; gap: 7px; position: absolute; right: 12px; top: 18px; z-index: 4; }
+.product-card-actions button { align-items: center; background: rgba(184, 95, 84, .82); border: 0; border-radius: 12px; color: #fff; cursor: pointer; display: flex; height: 52px; justify-content: center; width: 58px; }
+.product-card-actions button:hover { background: #a85147; }
+.homepage-product-block .store-card-add,
+.homepage-grid-block .store-card-add,
+.collection .store-card-add { align-items: center; border-radius: 12px; bottom: 16px; display: flex; height: 54px; justify-content: center; margin: 0; padding: 0; position: absolute; right: 16px; width: 58px; }
+.homepage-product-block .store-product-meta .store-card-add,
+.homepage-grid-block .store-product-meta .store-card-add,
+.collection .store-product-meta .store-card-add { align-self: auto; }
+.homepage-product-block .product-image-tags,
+.homepage-grid-block .product-image-tags,
+.collection .product-image-tags { right: 10px; top: 10px; }
+@media (max-width: 680px) {
+  .homepage-product-block .homepage-controlled-track,
+  .homepage-product-block .homepage-product-track { gap: 14px; }
+  .homepage-product-block .store-product,
+  .homepage-grid-block .store-product,
+  .collection .store-product { border-radius: 22px; }
+  .homepage-product-block .store-product-meta,
+  .homepage-grid-block .store-product-meta,
+  .collection .store-product-meta { min-height: 128px; padding: 12px 14px 14px; }
+  .homepage-product-block .store-product-meta h3,
+  .homepage-grid-block .store-product-meta h3,
+  .collection .store-product-meta h3 { font-size: 15px; margin: 5px 0 10px; }
+  .homepage-product-block .product-price del,
+  .homepage-grid-block .product-price del,
+  .collection .product-price del { font-size: 12px; }
+  .homepage-product-block .product-price strong,
+  .homepage-grid-block .product-price strong,
+  .collection .product-price strong { font-size: 16px; }
+  .product-card-actions { right: 9px; top: 12px; }
+  .product-card-actions button { border-radius: 10px; height: 48px; width: 52px; }
+  .homepage-product-block .store-card-add,
+  .homepage-grid-block .store-card-add,
+  .collection .store-card-add { bottom: 14px; height: 48px; right: 14px; width: 52px; }
+}

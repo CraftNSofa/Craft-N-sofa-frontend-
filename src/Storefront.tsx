@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
-import { ArrowRight, Check, ChevronDown, Menu, Minus, Plus, Search, ShoppingBag, UserRound, X } from 'lucide-react';
+import { ArrowRight, Check, ChevronDown, Eye, Heart, Menu, Minus, Plus, Search, ShoppingBag, ShoppingCart, UserRound, X } from 'lucide-react';
 import type { Banner, Product, PromoCard } from './types';
 import { createStorefrontOrder, loadBanners, loadCategories, loadProducts, loadStoreBranding, subscribeToCatalogue, type RemoteCategory, type StoreContentBlock } from './lib/commerce';
 import './storefront.css';
@@ -22,11 +22,15 @@ function ProductCard({ product, onAdd, onView }: { product: Product; onAdd: (pro
       {product.image_url ? <span className={`product-image-stack${secondaryImage ? ' has-secondary-image' : ''}`}><img className="product-image-primary" src={product.image_url} alt={product.name} />{secondaryImage && <img className="product-image-secondary" src={secondaryImage} alt={`${product.name} alternate view`} />}</span> : <div className="no-image">C<span>•</span>S</div>}
       {hasSale && <span className="sale-badge">-{discountPercent}% OFF</span>}
       {!!product.tags?.length && <div className="product-image-tags" aria-label="Product tags">{product.tags.map(tag => <span key={tag}>{tag}</span>)}</div>}
+      <div className="product-card-actions" aria-label="Product actions">
+        <button type="button" aria-label={`Preview ${product.name}`} onClick={(event) => { event.stopPropagation(); onView(product); }}><Eye size={20} /></button>
+        <button type="button" aria-label={`Save ${product.name}`} onClick={(event) => event.stopPropagation()}><Heart size={20} /></button>
+      </div>
     </div>
     <div className="store-product-meta">
       <h3>{product.name}</h3>
       <div className="product-price">{hasSale && <del>{money(originalPrice)}</del>}<strong>{money(currentPrice)}</strong></div>
-      <button type="button" className="store-card-add" onClick={() => onAdd(product)}>Add to cart</button>
+      <button type="button" className="store-card-add" aria-label={`Add ${product.name} to cart`} onClick={() => onAdd(product)}><ShoppingCart size={22} /></button>
     </div>
   </article>;
 }
