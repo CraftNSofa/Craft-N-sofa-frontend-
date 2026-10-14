@@ -543,8 +543,8 @@
 .homepage-product-block-empty .homepage-empty-block-title { font-size: clamp(34px, 5vw, 60px); line-height: 1.05; }
 @media (max-width: 680px) { .homepage-product-block-empty .homepage-empty-block-title { font-size: 36px; } }
 
-.product-carousel-banner { aspect-ratio: 3 / 1; margin: 18px auto 0; max-width: 1500px; overflow: hidden; width: 100%; }
-.product-carousel-banner img { display: block; height: 100%; object-fit: contain; width: 100%; }
+.product-carousel-banner { margin: 18px auto 0; max-width: 1500px; overflow: visible; width: 100%; }
+.product-carousel-banner img { aspect-ratio: 3 / 1; display: block; height: auto; object-fit: contain; width: 100%; }
 @media (max-width: 680px) { .product-carousel-banner { margin-top: 12px; } }
 
 /* Product banner edges align with the surrounding product section. */
@@ -568,6 +568,7 @@
 .homepage-product-block .banner-category-products { margin-left: -44px; margin-right: -44px; padding-left: 0; padding-right: 0; width: calc(100% + 88px); }
 @media (max-width: 680px) {
   .homepage-product-block .banner-category-products { margin-left: -22px; margin-right: -22px; padding-left: 0; padding-right: 0; width: calc(100% + 44px); }
+  .homepage-product-block .banner-category-products .homepage-carousel-shell { margin-left: 0; margin-right: 0; width: 100%; }
 }
 
 /* Reusable homepage block headings use the same typography as the banner title. */
