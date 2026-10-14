@@ -678,3 +678,9 @@
   .homepage-grid-block .store-card-add,
   .collection .store-card-add { bottom: 14px; height: 48px; right: 14px; width: 52px; }
 }
+
+/* Product detail CTA stays compact and proportional to the card cart control. */
+.product-detail-cart { align-items: center; display: inline-flex; font-size: 11px; gap: 12px; justify-content: center; min-width: 170px; padding: 12px 16px; }
+@media (max-width: 720px) {
+  .product-detail-cart { min-width: 0; width: 100%; }
+}
