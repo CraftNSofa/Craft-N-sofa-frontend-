@@ -16,9 +16,10 @@ function ProductCard({ product, onAdd, onView }: { product: Product; onAdd: (pro
   const currentPrice = Number(product.discount_price ?? product.price ?? 0);
   const hasSale = product.discount_price !== null && currentPrice < originalPrice;
   const discountPercent = hasSale && originalPrice > 0 ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100) : 0;
+  const secondaryImage = product.images?.find(image => image && image !== product.image_url) || null;
   return <article className="store-product">
     <div className="product-visual" role="button" tabIndex={0} onClick={() => onView(product)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onView(product); } }} aria-label={`View ${product.name}`}>
-      {product.image_url ? <img src={product.image_url} alt={product.name} /> : <div className="no-image">C<span>•</span>S</div>}
+      {product.image_url ? <span className={`product-image-stack${secondaryImage ? ' has-secondary-image' : ''}`}><img className="product-image-primary" src={product.image_url} alt={product.name} />{secondaryImage && <img className="product-image-secondary" src={secondaryImage} alt={`${product.name} alternate view`} />}</span> : <div className="no-image">C<span>•</span>S</div>}
       {hasSale && <span className="sale-badge">-{discountPercent}% OFF</span>}
       {!!product.tags?.length && <div className="product-image-tags" aria-label="Product tags">{product.tags.map(tag => <span key={tag}>{tag}</span>)}</div>}
     </div>

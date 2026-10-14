@@ -575,3 +575,14 @@
 .homepage-product-block .section-heading h2,
 .homepage-grid-block .section-heading h2 { color: #141414; font-family: 'Playfair Display', Georgia, serif; font-size: clamp(24px, 3vw, 38px); font-weight: 500; letter-spacing: normal; line-height: 1.1; }
 @media (max-width: 680px) { .homepage-product-block .section-heading h2, .homepage-grid-block .section-heading h2 { font-size: 28px; } }
+
+/* Product card image swap: reveal the first additional product image on hover. */
+.product-image-stack { display: block; inset: 0; position: absolute; }
+.product-image-stack img { height: 100%; object-fit: cover; width: 100%; }
+.product-image-primary { display: block; transition: opacity 280ms ease, transform 500ms ease; }
+.product-image-secondary { inset: 0; opacity: 0; position: absolute; transition: opacity 280ms ease, transform 500ms ease; }
+.product-visual:hover .product-image-primary { transform: scale(1.04); }
+.product-visual:hover .product-image-secondary { opacity: 1; transform: scale(1.04); }
+@media (prefers-reduced-motion: reduce) {
+  .product-image-primary, .product-image-secondary { transition: none; }
+}
