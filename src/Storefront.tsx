@@ -297,6 +297,7 @@ export default function Storefront() {
           <h2>Contact Us</h2>
           <a href="tel:+923303511464"><Phone size={15} aria-hidden="true" />+92 330 3511464</a>
           <a href="https://wa.me/923303511464" target="_blank" rel="noreferrer"><MessageCircle size={15} aria-hidden="true" />WhatsApp: +92 330 3511464</a>
+          <a href="mailto:woodora2526@gmail.com"><Mail size={15} aria-hidden="true" />woodora2526@gmail.com</a>
           <p><MapPin size={15} aria-hidden="true" />Lalu Khet 10 Number se aane wala road, near UBL Bank, Karachi</p>
         </div>
       </div>
