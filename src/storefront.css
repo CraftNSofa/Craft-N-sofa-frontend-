@@ -583,15 +583,17 @@
 .homepage-grid-block .section-heading h2 { color: #141414; font-family: 'Playfair Display', Georgia, serif; font-size: clamp(24px, 3vw, 38px); font-weight: 500; letter-spacing: normal; line-height: 1.1; }
 @media (max-width: 680px) { .homepage-product-block .section-heading h2, .homepage-grid-block .section-heading h2 { font-size: 28px; } }
 
-/* Product card image swap: show one complete image at a time without zoom or cross-fade overlap. */
+/* Product card image swap: only swap when an alternate exists; keep both views square-cropped. */
 .product-image-stack { display: block; inset: 0; position: absolute; }
-.product-image-stack img { height: 100%; object-fit: cover; transform: none; transition: none; width: 100%; }
+.product-image-stack img { height: 100%; transform: none; transition: none; width: 100%; }
+/* Match the card's square framing consistently, including contexts with older contain rules. */
+.store-product .product-visual .product-image-stack img { object-fit: cover; object-position: center; }
 .product-image-primary { display: block; opacity: 1; }
 .product-image-secondary { inset: 0; opacity: 0; position: absolute; }
-.product-visual:hover .product-image-primary,
-.product-visual:focus-visible .product-image-primary { opacity: 0; transform: none; }
-.product-visual:hover .product-image-secondary,
-.product-visual:focus-visible .product-image-secondary { opacity: 1; transform: none; }
+.product-visual:hover .product-image-stack.has-secondary-image .product-image-primary,
+.product-visual:focus-visible .product-image-stack.has-secondary-image .product-image-primary { opacity: 0; transform: none; }
+.product-visual:hover .product-image-stack.has-secondary-image .product-image-secondary,
+.product-visual:focus-visible .product-image-stack.has-secondary-image .product-image-secondary { opacity: 1; transform: none; }
 
 /* Reference-style homepage product cards: balanced spacing, badges, and aligned actions. */
 .homepage-product-block .store-product,
