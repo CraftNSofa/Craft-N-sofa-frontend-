@@ -902,3 +902,16 @@
   .collection .store-product-meta .store-card-add,
   .category-page-products .store-product-meta .store-card-add { height: 36px; width: 38px; }
 }
+
+
+/* Furniture payment and dispatch announcement above the storefront header */
+.furniture-flash-news { background: #5C4033; color: #fff; width: 100%; overflow: hidden; white-space: nowrap; padding: 9px 0; font-size: 12px; font-weight: 400; line-height: 1.4; }
+.flash-news-track { align-items: center; animation: furniture-news-scroll 45s linear infinite; display: inline-flex; gap: 18px; width: max-content; }
+.flash-news-track .dot { color: #fff; }
+.furniture-flash-news:hover .flash-news-track,
+.furniture-flash-news:focus-within .flash-news-track { animation-play-state: paused; }
+@keyframes furniture-news-scroll { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .flash-news-track { animation: none; }
+  .furniture-flash-news { overflow-x: auto; }
+}

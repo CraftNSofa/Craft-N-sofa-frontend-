@@ -204,6 +204,20 @@ export default function Storefront() {
   const firstProductCarouselId = storeContent.content_blocks.find(block => block.active && block.kind === 'product-carousel')?.id || storeContent.content_blocks.find(block => block.active && block.kind === 'tag-carousel')?.id;
 
   return <div className="storefront" id="top">
+    <div className="furniture-flash-news" role="region" aria-label="Order and payment information">
+      <div className="flash-news-track">
+        <span>20% advance payment is required before processing your furniture order.</span>
+        <span className="dot" aria-hidden="true">•</span>
+        <span>Once your furniture is ready, we will call you for confirmation.</span>
+        <span className="dot" aria-hidden="true">•</span>
+        <span>Remaining balance must be paid before dispatch.</span>
+        <span className="dot" aria-hidden="true">•</span>
+        <span>Furniture will be dispatched after payment confirmation.</span>
+        <span className="dot" aria-hidden="true">•</span>
+        <span>Online payments preferred; cash accepted at our office.</span>
+        <span className="dot" aria-hidden="true">•</span>
+      </div>
+    </div>
     <header className="store-header"><div className="store-header-top"><button className="store-search-toggle" aria-label="Search products" onClick={() => setSearchOpen(open => !open)}><Search size={20} /></button><a className="store-logo store-logo-centered" href="/">{logoUrl ? <img src={logoUrl} alt="Woodora" /> : <><span>W</span>OODORA</>}</a><div className="store-actions"><button className="store-account" aria-label="Account"><UserRound size={20} /></button><button className="store-cart" aria-label="Open shopping bag" onClick={() => setCartOpen(true)}><ShoppingBag size={20} /><span>{cart.reduce((sum, line) => sum + line.quantity, 0)}</span></button><button className="store-menu" aria-label="Open menu" onClick={() => setMenuOpen(!menuOpen)}><Menu size={22} /></button></div></div><div className={`store-search ${searchOpen ? 'open' : ''}`}><Search size={15} /><input aria-label="Search products" placeholder="Search for products, brands and more..." value={searchTerm} onChange={event => setSearchTerm(event.target.value)} />{searchTerm.trim() && <div className="store-search-results" role="listbox" aria-label="Search results">{searchResults.length ? searchResults.map(product => <button type="button" className="store-search-result" key={String(product.id)} role="option" aria-selected="false" onClick={() => { setQuickViewProduct(product); setSearchOpen(false); }}><span className="store-search-result-image">{product.image_url && <img src={product.image_url} alt="" />}</span><span className="store-search-result-copy"><strong title={product.name}>{product.name}</strong><small>{money(Number(product.discount_price ?? product.price ?? 0))}</small></span></button>) : <p className="store-search-empty">No matching products found.</p>}</div>}</div><nav className={menuOpen ? 'store-nav open' : 'store-nav'} aria-label="Main navigation"><a href="/" onClick={() => setMenuOpen(false)}>Home</a><a href="/products" onClick={() => { setActiveCategory('All pieces'); setMenuOpen(false); }}>Products</a><div className="store-nav-category"><a href="/category" onClick={() => setMenuOpen(false)}>Category <ChevronDown size={13} /></a><div className="store-category-dropdown" role="menu">{categories.filter(category => category.active).map(category => <a key={category.id} href={`/category/${category.slug || slugify(category.name)}`} role="menuitem" onClick={() => setMenuOpen(false)}>{category.name}</a>)}{!categories.some(category => category.active) && <span className="store-category-empty">No categories yet</span>}</div></div><a href={isCategoryPage ? '/#contact' : '#contact'} onClick={() => setMenuOpen(false)}>Contact Us</a></nav></header>
     <main>
       {isProductsPage ? <AllProductsPage products={products} loading={loading} onAdd={add} onView={setQuickViewProduct} /> : isCategoryPage ? <CategoryPage categories={categories} selectedCategory={routeCategory} products={categoryPageProducts} loading={loading} onAdd={add} onView={setQuickViewProduct} /> : <>
