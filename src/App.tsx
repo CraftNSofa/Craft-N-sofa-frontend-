@@ -51,6 +51,7 @@ type PromoCardDraft = PromoCard & { image_file?: File };
 type StoreContentData = { custom_html: string; custom_css: string; secondary_image_url: string | null; secondary_image_title: string; product_banner_url: string | null; product_banner_title: string; content_blocks: StoreContentBlock[] };
 
 const money = (value: number) => `Rs ${Math.round(value).toLocaleString('en-IN')}`;
+const AUTHORIZED_ADMIN_EMAIL = 'faizantrader126@gmail.com';
 const today = new Date().toISOString().slice(0, 10);
 const uid = () => Math.random().toString(36).slice(2, 10);
 
@@ -103,6 +104,7 @@ function StatusPill({ status }: { status: OrderStatus }) {
 function App() {
   const [session, setSession] = useState(false);
   const [passwordRecovery, setPasswordRecovery] = useState(false);
+  const [loginNotice, setLoginNotice] = useState('');
   const [remoteReady, setRemoteReady] = useState(false);
   const [tab, setTab] = useState<Tab>('overview');
   const [banners, setBanners] = useState<Banner[]>([]);
@@ -124,6 +126,11 @@ function App() {
     });
     getCurrentUser().then(async user => {
       if (!active || !user) return;
+      if (user.email?.trim().toLowerCase() !== AUTHORIZED_ADMIN_EMAIL) {
+        await signOutAdmin();
+        if (active) setLoginNotice(`Access is limited to ${AUTHORIZED_ADMIN_EMAIL}.`);
+        return;
+      }
       setSession(true);
       const results = await Promise.allSettled([loadProducts(), loadCategories(), loadTags(), loadOrders(), loadExpenses(), loadStoreBranding(), loadBanners()]);
       if (!active) return;
@@ -241,7 +248,7 @@ function App() {
   const logout = async () => { await signOutAdmin(); setSession(false); setRemoteReady(false); };
 
   if (passwordRecovery) return <PasswordRecoveryScreen onDone={() => { setPasswordRecovery(false); setSession(false); window.history.replaceState({}, document.title, window.location.pathname); }} />;
-  if (!session) return <LoginScreen onLogin={() => setSession(true)} />;
+  if (!session) return <LoginScreen onLogin={() => setSession(true)} authNotice={loginNotice} />;
 
   return <div className="app-shell">
     <aside className={`sidebar ${mobileNav ? 'mobile-open' : ''}`}>
@@ -296,16 +303,16 @@ function PasswordRecoveryScreen({ onDone }: { onDone: () => void }) {
   return <div className="login-page"><section className="login-card"><div className="brand-mark large">W</div><div className="eyebrow">WOODORA</div><h1>{complete ? 'Password updated.' : <>Choose a new<br /><i>password.</i></>}</h1><p>{complete ? 'Your admin password has been changed. Sign in with your new password.' : 'Set a new password to finish recovering your admin account.'}</p>{complete ? <button type="button" className="primary-button full" onClick={onDone}>Return to sign in <ArrowUpRight size={17} /></button> : <form onSubmit={event => void submit(event)} className="login-form"><label>New password<input type="password" autoComplete="new-password" minLength={6} required value={password} onChange={event => setPassword(event.target.value)} placeholder="At least 6 characters" /></label><label>Confirm new password<input type="password" autoComplete="new-password" minLength={6} required value={confirmPassword} onChange={event => setConfirmPassword(event.target.value)} placeholder="Enter it again" /></label>{error && <small className="form-error"><AlertCircle size={13} /> {error}</small>}<button className="primary-button full" disabled={busy}>{busy ? 'Updating password…' : 'Update password'} <ArrowUpRight size={17} /></button></form>}</section></div>;
 }
 
-function LoginScreen({ onLogin }: { onLogin: () => void }) {
-  const [email, setEmail] = useState('');
+function LoginScreen({ onLogin, authNotice }: { onLogin: () => void; authNotice?: string }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   useEffect(() => { loadStoreBranding().then(branding => setLogoUrl(branding.logo_url)).catch(() => undefined); }, []);
+  useEffect(() => { if (authNotice) setError(authNotice); }, [authNotice]);
   const submit = async (event: FormEvent) => {
     event.preventDefault(); setError(''); setBusy(true);
-    const { error: authError } = await signInAdmin(email, password);
+    const { error: authError } = await signInAdmin(AUTHORIZED_ADMIN_EMAIL, password);
     setBusy(false);
     if (authError) { setError(authError.message); return; }
     onLogin();
@@ -316,13 +323,12 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
     if (authError) { setBusy(false); setError(authError.message); }
   };
   const forgotPassword = async () => {
-    if (!email.trim()) { setError('Enter your admin email first, then choose Forgot password.'); return; }
     setError(''); setBusy(true);
-    const { error: resetError } = await sendAdminPasswordReset(email);
+    const { error: resetError } = await sendAdminPasswordReset(AUTHORIZED_ADMIN_EMAIL);
     setBusy(false);
     setError(resetError ? resetError.message : 'Password reset link sent. Check your email inbox.');
   };
-  return <div className="login-page"><div className="login-card"><div className="login-logo-wrap">{logoUrl ? <img src={logoUrl} alt="Woodora" className="login-logo" /> : <div className="brand-mark large">C<span>•</span>S</div>}</div><div className="eyebrow">WOODORA</div><h1>Welcome to your<br /><i>store workspace.</i></h1><p>Sign in with your authorised admin account to manage the store.</p><form onSubmit={submit} className="login-form"><label>Admin email<input type="email" value={email} onChange={event => setEmail(event.target.value)} required autoComplete="email" placeholder="you@example.com" /></label><label>Password<input type="password" value={password} onChange={event => setPassword(event.target.value)} required autoComplete="current-password" placeholder="Your password" /></label><button type="button" className="forgot-password" onClick={() => void forgotPassword()} disabled={busy}>Forgot password?</button>{error && <small className="form-error"><AlertCircle size={13} /> {error}</small>}<button className="primary-button full" disabled={busy}>{busy ? 'Signing in…' : 'Enter admin workspace'} <ArrowUpRight size={17} /></button></form><div className="login-divider"><span>OR</span></div><button type="button" className="google-login-button" onClick={() => void googleLogin()} disabled={busy}><strong>G</strong><span>Continue with Google</span></button><small className="demo-note"><Database size={13} /> Secure access is managed by Supabase Auth.</small></div></div>;
+  return <div className="login-page"><div className="login-card"><div className="login-logo-wrap">{logoUrl ? <img src={logoUrl} alt="Woodora" className="login-logo" /> : <div className="brand-mark large">C<span>•</span>S</div>}</div><div className="eyebrow">WOODORA</div><h1>Welcome to your<br /><i>store workspace.</i></h1><p>Sign in with your authorised admin account to manage the store.</p><form onSubmit={submit} className="login-form"><label>Authorized admin email<input type="email" value={AUTHORIZED_ADMIN_EMAIL} readOnly autoComplete="email" /></label><label>Password<input type="password" value={password} onChange={event => setPassword(event.target.value)} required autoComplete="current-password" placeholder="Your password" /></label><button type="button" className="forgot-password" onClick={() => void forgotPassword()} disabled={busy}>Forgot password?</button>{error && <small className="form-error"><AlertCircle size={13} /> {error}</small>}<button className="primary-button full" disabled={busy}>{busy ? 'Signing in…' : 'Enter admin workspace'} <ArrowUpRight size={17} /></button></form><div className="login-divider"><span>OR</span></div><button type="button" className="google-login-button" onClick={() => void googleLogin()} disabled={busy}><strong>G</strong><span>Continue with Google</span></button><small className="demo-note"><Database size={13} /> Secure access is managed by Supabase Auth.</small></div></div>;
 }
 
 function Overview({ revenue, grossProfit, netProfit, orders, lowStock, expenseTotal, onOrders, onProducts }: { revenue: number; grossProfit: number; netProfit: number; orders: Order[]; lowStock: number; expenseTotal: number; onOrders: () => void; onProducts: () => void }) {
