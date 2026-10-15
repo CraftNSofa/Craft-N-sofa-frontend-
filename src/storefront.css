@@ -773,3 +773,12 @@
     padding-top: 18px;
   }
 }
+@media (max-width: 680px) {
+  .homepage-product-block .store-card-add,
+  .homepage-grid-block .store-card-add,
+  .collection .store-card-add,
+  .category-page-products .store-card-add {
+    height: 36px;
+    width: 38px;
+  }
+}
