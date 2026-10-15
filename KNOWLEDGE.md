@@ -194,7 +194,7 @@ This document is derived from the repository files listed below and should be up
 
 ## References
 
-[1]: https://github.com/CraftNSofa/woodora "Woodora Frontend repository"
+[1]: https://github.com/CraftNSofa/woodora "Woodora repository"
 [2]: https://supabase.com/docs/guides/database/postgres/row-level-security "Supabase Row Level Security documentation"
 [3]: https://supabase.com/docs/guides/storage/security/access-control "Supabase Storage access control documentation"
 
