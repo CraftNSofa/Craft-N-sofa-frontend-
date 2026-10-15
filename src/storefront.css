@@ -290,7 +290,7 @@
 .collection .store-product { flex: 0 0 calc((100% - 66px) / 4); }
 .collection .product-visual { background: #eee; height: auto; aspect-ratio: 1 / 1; }
 .collection .product-visual img { object-position: center; }
-.sale-badge { background: #111; color: #fff; font-size: 9px; font-weight: 600; left: 10px; letter-spacing: .08em; padding: 6px 8px; position: absolute; top: 10px; }
+.sale-badge { background: #5C4033; color: #fff; font-size: 9px; font-weight: 600; left: 10px; letter-spacing: .08em; padding: 6px 8px; position: absolute; top: 10px; }
 .collection .store-product-meta { display: block; padding: 13px 0 0; }
 .collection .store-product-meta h3 { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 400; letter-spacing: .01em; margin: 0 0 10px; }
 .product-price { align-items: center; display: flex; flex-wrap: wrap; gap: 9px; }
