@@ -583,16 +583,15 @@
 .homepage-grid-block .section-heading h2 { color: #141414; font-family: 'Playfair Display', Georgia, serif; font-size: clamp(24px, 3vw, 38px); font-weight: 500; letter-spacing: normal; line-height: 1.1; }
 @media (max-width: 680px) { .homepage-product-block .section-heading h2, .homepage-grid-block .section-heading h2 { font-size: 28px; } }
 
-/* Product card image swap: reveal the first additional product image on hover. */
+/* Product card image swap: show one complete image at a time without zoom or cross-fade overlap. */
 .product-image-stack { display: block; inset: 0; position: absolute; }
-.product-image-stack img { height: 100%; object-fit: cover; width: 100%; }
-.product-image-primary { display: block; transition: opacity 280ms ease, transform 500ms ease; }
-.product-image-secondary { inset: 0; opacity: 0; position: absolute; transition: opacity 280ms ease, transform 500ms ease; }
-.product-visual:hover .product-image-primary { transform: scale(1.04); }
-.product-visual:hover .product-image-secondary { opacity: 1; transform: scale(1.04); }
-@media (prefers-reduced-motion: reduce) {
-  .product-image-primary, .product-image-secondary { transition: none; }
-}
+.product-image-stack img { height: 100%; object-fit: cover; transform: none; transition: none; width: 100%; }
+.product-image-primary { display: block; opacity: 1; }
+.product-image-secondary { inset: 0; opacity: 0; position: absolute; }
+.product-visual:hover .product-image-primary,
+.product-visual:focus-visible .product-image-primary { opacity: 0; transform: none; }
+.product-visual:hover .product-image-secondary,
+.product-visual:focus-visible .product-image-secondary { opacity: 1; transform: none; }
 
 /* Reference-style homepage product cards: balanced spacing, badges, and aligned actions. */
 .homepage-product-block .store-product,
