@@ -1130,3 +1130,37 @@
   .checkout-backdrop { align-items: flex-start; padding: 12px; }
   .checkout-backdrop .checkout-card { max-height: calc(100vh - 24px); padding: 22px; width: 100%; }
 }
+
+
+/* Compact, scroll-safe Delivery Details form for short/mobile viewports */
+.checkout-backdrop { align-items: flex-start; overscroll-behavior: contain; }
+.checkout-backdrop .checkout-card {
+  box-sizing: border-box;
+  margin: auto;
+  max-height: calc(100vh - 20px);
+  max-height: calc(100dvh - 20px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px;
+  width: min(100%, 500px);
+}
+.checkout-backdrop .checkout-card form { gap: 10px; padding-top: 12px; }
+.checkout-backdrop .checkout-fields-grid { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.checkout-backdrop .checkout-fields-grid label { min-width: 0; }
+.checkout-backdrop .checkout-card input,
+.checkout-backdrop .checkout-card textarea { margin-top: 4px; padding: 9px 11px; }
+.checkout-backdrop .checkout-card textarea { min-height: 62px; }
+.checkout-backdrop .place-request-button { bottom: 0; min-height: 44px; position: sticky; z-index: 2; }
+@media (max-width: 600px) {
+  .checkout-backdrop { align-items: flex-start; padding: 8px; }
+  .checkout-backdrop .checkout-card { max-height: calc(100vh - 16px); max-height: calc(100dvh - 16px); padding: 16px; width: 100%; }
+  .checkout-backdrop .checkout-fields-grid { grid-template-columns: 1fr; gap: 8px; }
+  .checkout-backdrop .checkout-card form { gap: 8px; padding-top: 10px; }
+  .checkout-backdrop .checkout-card .cart-head { margin-bottom: 10px; padding-bottom: 10px; }
+  .checkout-backdrop .checkout-card .cart-head h2 { font-size: 24px; margin-top: 4px; }
+}
+@media (max-height: 640px) {
+  .checkout-backdrop .checkout-card { padding-bottom: 12px; padding-top: 12px; }
+  .checkout-backdrop .checkout-card textarea { min-height: 48px; }
+}
