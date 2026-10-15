@@ -267,6 +267,13 @@
   .store-logo-centered img { max-width: 118px; }
 }
 
+/* Keep the header shopping-bag control compact and balanced beside the logo/menu. */
+.store-cart { padding: 4px !important; }
+.store-cart svg { height: 18px; width: 18px; }
+@media (max-width: 420px) {
+  .store-cart svg { height: 16px; width: 16px; }
+}
+
 
 /* Reference-style collection and product cards */
 .collection { max-width: 1360px; padding: 74px 16px 120px; }
