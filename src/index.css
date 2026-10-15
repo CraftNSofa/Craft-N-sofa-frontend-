@@ -311,3 +311,15 @@
   .contact-message-head { flex-direction: column; }
   .message-status-button { align-self: flex-start; }
 }
+
+
+/* Customer contact eye action in Live Orders */
+.row-actions { align-items: center; display: flex; gap: 6px; justify-content: flex-end; }
+.row-actions .row-eye, .row-actions .row-arrow { align-items: center; background: #f7f4fa; border: 0; border-radius: 6px; color: #71677a; display: inline-flex; height: 30px; justify-content: center; padding: 0; transition: background 120ms ease, color 120ms ease; width: 30px; }
+.row-actions .row-eye:hover, .row-actions .row-arrow:hover { background: #eee9f2; color: #2c2432; }
+.row-actions .row-eye:focus-visible, .row-actions .row-arrow:focus-visible { outline: 2px solid #71677a; outline-offset: 2px; }
+.customer-detail-grid { display: grid; gap: 10px; }
+.customer-detail-item { background: #faf9fb; border: 1px solid #f0edf2; border-radius: 9px; min-width: 0; padding: 12px 14px; }
+.customer-detail-item small { color: #8b8490; display: block; font-size: 10px; font-weight: 700; letter-spacing: .04em; margin-bottom: 5px; text-transform: uppercase; }
+.customer-detail-item strong, .customer-detail-item a, .customer-detail-item span { color: #342d3b; display: block; font-size: 13px; font-weight: 500; overflow-wrap: anywhere; text-decoration: none; }
+.customer-detail-item a:hover { text-decoration: underline; }

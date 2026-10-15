@@ -7,7 +7,7 @@ import { getSupabaseClient } from '../config/supabase';
 export type RemoteCategory = { id: string; name: string; description: string | null; active: boolean; sort_order: number; slug?: string; image_url?: string | null; parent_id?: string | null };
 export type RemoteTag = Tag & { description: string | null; created_at?: string; updated_at?: string };
 export type RemoteBanner = Banner;
-export type RemoteOrder = { id: string; order_number: string; customer_name: string; customer_email: string | null; shipping_address: Record<string, unknown>; status: string; payment_status: string; total: number; created_at: string; order_items?: Array<{ quantity: number; selling_price: number; cost_price: number }> };
+export type RemoteOrder = { id: string; order_number: string; customer_name: string; customer_email: string | null; customer_phone?: string | null; shipping_address: Record<string, unknown>; status: string; payment_status: string; total: number; created_at: string; order_items?: Array<{ quantity: number; selling_price: number; cost_price: number }> };
 export type RemoteExpense = { id: string; title: string; category: string; amount: number; expense_date: string };
 export type RemoteContactMessage = { id: string; name: string; email: string; phone: string; subject: string; message: string; status: 'unread' | 'read'; created_at: string };
 
@@ -328,9 +328,13 @@ export async function uploadProductImage(file: File, onProgress?: (progress: num
 }
 
 export async function loadOrders(): Promise<RemoteOrder[]> {
-  const { data, error } = await supabase().from('orders').select('id,order_number,customer_name,customer_email,shipping_address,status,payment_status,total,created_at,order_items(quantity,selling_price,cost_price)').order('created_at', { ascending: false }).limit(100);
-  if (error) throw error;
-  return data ?? [];
+  const withPhone = await supabase().from('orders').select('id,order_number,customer_name,customer_email,customer_phone,shipping_address,status,payment_status,total,created_at,order_items(quantity,selling_price,cost_price)').order('created_at', { ascending: false }).limit(100);
+  if (!withPhone.error) return withPhone.data ?? [];
+  const phoneColumnMissing = withPhone.error.code === '42703' || withPhone.error.code === 'PGRST204' || /customer_phone/i.test(withPhone.error.message);
+  if (!phoneColumnMissing) throw withPhone.error;
+  const fallback = await supabase().from('orders').select('id,order_number,customer_name,customer_email,shipping_address,status,payment_status,total,created_at,order_items(quantity,selling_price,cost_price)').order('created_at', { ascending: false }).limit(100);
+  if (fallback.error) throw fallback.error;
+  return fallback.data ?? [];
 }
 
 export async function updateOrderStatus(id: string, status: string, previousStatus?: string) {
