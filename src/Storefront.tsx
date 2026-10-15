@@ -52,9 +52,17 @@ function ProductCarousel({ products, onAdd, onView }: { products: Product[]; onA
 function hasLShapedTag(product: Product) { return (product.tags || []).some(tag => /l[\s-]*shaped|corner[\s-]*set/i.test(tag)); }
 function isCornerSetProduct(product: Product) { const searchable = [product.name, product.category, ...(product.tags || [])].filter(Boolean).join(' ').toLowerCase(); return /l[\s-]*shaped|corner/.test(searchable); }
 function isDoubleBedProduct(product: Product) { return (product.tags || []).some(tag => tag.trim().toLowerCase() === 'double bed and sofa cumbed') && !isCornerSetProduct(product); }
+function TrustBar() {
+  return <div className="trust-bar" role="list" aria-label="Shopping and delivery assurances">
+    <div className="trust-item" role="listitem"><span className="trust-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.4 11.2a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L22 7H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></span><span className="trust-text">100% Safe Orders</span></div>
+    <div className="trust-item" role="listitem"><span className="trust-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="12" width="4" height="7" rx="2"/><rect x="17" y="12" width="4" height="7" rx="2"/><path d="M17 19a5 3 0 0 1-5 3h-2"/></svg></span><span className="trust-text">24/7 CUSTOMER SUPPORT</span></div>
+    <div className="trust-item" role="listitem"><span className="trust-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h12v12H3z"/><path d="M15 10h4l3 4v4h-7z"/><circle cx="7.5" cy="19" r="2"/><circle cx="18.5" cy="19" r="2"/></svg></span><span className="trust-text">EASY DELIVERY</span></div>
+    <div className="trust-item" role="listitem"><span className="trust-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/></svg></span><span className="trust-text">SECURE PAYMENT</span></div>
+  </div>;
+}
 function BannerCategoryProducts({ title, products, onAdd, onView }: { title: string; products: Product[]; onAdd: (product: Product) => void; onView: (product: Product) => void }) {
   if (!title || !products.length) return null;
-  return <section className="banner-category-products" aria-label={`${title} products`}><ProductCarousel products={products} onAdd={onAdd} onView={onView} /></section>;
+  return <section className="banner-category-products" aria-label={`${title} products`}><ProductCarousel products={products} onAdd={onAdd} onView={onView} /><TrustBar /></section>;
 }
 function ProductQuickView({ product, onAdd, onClose }: { product: Product; onAdd: (product: Product, quantity: number) => void; onClose: () => void }) {
   const gallery = Array.from(new Set([product.image_url, ...(product.images || [])].filter(Boolean))) as string[];
