@@ -991,7 +991,7 @@
   text-decoration: none;
 }
 .store-footer-logo img {
-  filter: brightness(0) invert(1);
+  filter: none;
   max-height: 58px;
   max-width: 205px;
   object-fit: contain;
