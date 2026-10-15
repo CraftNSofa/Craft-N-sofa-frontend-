@@ -102,6 +102,7 @@ function StatusPill({ status }: { status: OrderStatus }) {
 
 function App() {
   const [session, setSession] = useState(false);
+  const [passwordRecovery, setPasswordRecovery] = useState(false);
   const [remoteReady, setRemoteReady] = useState(false);
   const [tab, setTab] = useState<Tab>('overview');
   const [banners, setBanners] = useState<Banner[]>([]);
@@ -117,6 +118,10 @@ function App() {
 
   useEffect(() => {
     let active = true;
+    if (window.location.hash.includes('type=recovery')) setPasswordRecovery(true);
+    const { data: { subscription } } = getSupabaseClient().auth.onAuthStateChange(event => {
+      if (event === 'PASSWORD_RECOVERY') setPasswordRecovery(true);
+    });
     getCurrentUser().then(async user => {
       if (!active || !user) return;
       setSession(true);
@@ -132,7 +137,7 @@ function App() {
       if (bannerResult.status === 'fulfilled') setBanners(bannerResult.value);
       setRemoteReady(true);
     }).catch(() => undefined);
-    return () => { active = false; };
+    return () => { active = false; subscription.unsubscribe(); };
   }, []);
 
   useEffect(() => {
@@ -235,6 +240,7 @@ function App() {
   };
   const logout = async () => { await signOutAdmin(); setSession(false); setRemoteReady(false); };
 
+  if (passwordRecovery) return <PasswordRecoveryScreen onDone={() => { setPasswordRecovery(false); setSession(false); window.history.replaceState({}, document.title, window.location.pathname); }} />;
   if (!session) return <LoginScreen onLogin={() => setSession(true)} />;
 
   return <div className="app-shell">
@@ -267,6 +273,27 @@ function App() {
     {editingBanner && <BannerEditModal banner={editingBanner} onClose={() => setEditingBanner(null)} onSave={async (banner, desktopFile, mobileFile, removeMobile, altText) => { try { if (!remoteReady) throw new Error('Connect the admin workspace before editing banners'); const saved = await replaceStoreBannerAssets(banner, desktopFile, mobileFile, removeMobile, altText); setBanners(current => current.map(item => item.id === saved.id ? saved : item)); setEditingBanner(null); showToast('Banner updated'); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not update banner'); } }} />}
     {brandingModal && <BrandingModal logoUrl={brandLogoUrl} onClose={() => setBrandingModal(false)} onSave={async file => { try { if (!remoteReady) throw new Error('Connect the admin workspace before changing branding'); const saved = await uploadStoreLogo(file, brandLogoUrl); setBrandLogoUrl(saved.logo_url); setBrandingModal(false); showToast('Store logo updated'); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not update logo'); } }} onRemove={async () => { try { if (!remoteReady) throw new Error('Connect the admin workspace before changing branding'); await clearStoreLogo(brandLogoUrl); setBrandLogoUrl(null); setBrandingModal(false); showToast('Store logo removed'); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not remove logo'); } }} />}
   </div>;
+}
+
+function PasswordRecoveryScreen({ onDone }: { onDone: () => void }) {
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [complete, setComplete] = useState(false);
+  const submit = async (event: FormEvent) => {
+    event.preventDefault();
+    setError('');
+    if (password.length < 6) { setError('Password must be at least 6 characters.'); return; }
+    if (password !== confirmPassword) { setError('The passwords do not match.'); return; }
+    setBusy(true);
+    const { error: updateError } = await getSupabaseClient().auth.updateUser({ password });
+    setBusy(false);
+    if (updateError) { setError(updateError.message); return; }
+    await signOutAdmin().catch(() => undefined);
+    setComplete(true);
+  };
+  return <div className="login-page"><section className="login-card"><div className="brand-mark large">W</div><div className="eyebrow">WOODORA</div><h1>{complete ? 'Password updated.' : <>Choose a new<br /><i>password.</i></>}</h1><p>{complete ? 'Your admin password has been changed. Sign in with your new password.' : 'Set a new password to finish recovering your admin account.'}</p>{complete ? <button type="button" className="primary-button full" onClick={onDone}>Return to sign in <ArrowUpRight size={17} /></button> : <form onSubmit={event => void submit(event)} className="login-form"><label>New password<input type="password" autoComplete="new-password" minLength={6} required value={password} onChange={event => setPassword(event.target.value)} placeholder="At least 6 characters" /></label><label>Confirm new password<input type="password" autoComplete="new-password" minLength={6} required value={confirmPassword} onChange={event => setConfirmPassword(event.target.value)} placeholder="Enter it again" /></label>{error && <small className="form-error"><AlertCircle size={13} /> {error}</small>}<button className="primary-button full" disabled={busy}>{busy ? 'Updating password…' : 'Update password'} <ArrowUpRight size={17} /></button></form>}</section></div>;
 }
 
 function LoginScreen({ onLogin }: { onLogin: () => void }) {
