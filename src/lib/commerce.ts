@@ -9,6 +9,7 @@ export type RemoteTag = Tag & { description: string | null; created_at?: string;
 export type RemoteBanner = Banner;
 export type RemoteOrder = { id: string; order_number: string; customer_name: string; customer_email: string | null; shipping_address: Record<string, unknown>; status: string; payment_status: string; total: number; created_at: string; order_items?: Array<{ quantity: number; selling_price: number; cost_price: number }> };
 export type RemoteExpense = { id: string; title: string; category: string; amount: number; expense_date: string };
+export type RemoteContactMessage = { id: string; name: string; email: string; phone: string; subject: string; message: string; status: 'unread' | 'read'; created_at: string };
 
 const supabase = () => getSupabaseClient();
 
@@ -33,6 +34,28 @@ export async function sendAdminPasswordReset(email: string) {
 
 export async function signOutAdmin() {
   await supabase().auth.signOut();
+}
+
+export async function createContactMessage(input: Omit<RemoteContactMessage, 'id' | 'status' | 'created_at'>) {
+  const { data, error } = await supabase().from('contact_messages').insert({ name: input.name.trim(), email: input.email.trim().toLowerCase(), phone: input.phone.trim(), subject: input.subject.trim(), message: input.message.trim(), status: 'unread' }).select('id,name,email,phone,subject,message,status,created_at').single();
+  if (error) throw error;
+  return data as RemoteContactMessage;
+}
+
+export async function loadContactMessages(): Promise<RemoteContactMessage[]> {
+  const { data, error } = await supabase().from('contact_messages').select('id,name,email,phone,subject,message,status,created_at').order('created_at', { ascending: false }).limit(200);
+  if (error) throw error;
+  return (data ?? []) as RemoteContactMessage[];
+}
+
+export async function updateContactMessageStatus(id: string, status: RemoteContactMessage['status']) {
+  const { data, error } = await supabase().from('contact_messages').update({ status }).eq('id', id).select('id,name,email,phone,subject,message,status,created_at').single();
+  if (error) throw error;
+  return data as RemoteContactMessage;
+}
+
+export function subscribeToContactMessages(onChange: () => void) {
+  return supabase().channel('admin-contact-messages').on('postgres_changes', { event: '*', schema: 'public', table: 'contact_messages' }, onChange).subscribe();
 }
 
 export async function getCurrentUser(): Promise<User | null> {

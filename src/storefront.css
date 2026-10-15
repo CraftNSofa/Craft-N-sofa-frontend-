@@ -1085,3 +1085,6 @@
   .contact-form-grid { grid-template-columns: 1fr; }
   .contact-submit { width: 100%; }
 }
+
+.contact-submit:disabled { cursor: wait; opacity: .65; }
+.contact-error { color: #a74a42; font-size: 12px; margin: 18px 0 0; }

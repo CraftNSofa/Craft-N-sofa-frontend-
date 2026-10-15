@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { ArrowRight, Check, ChevronDown, Mail, MapPin, Menu, MessageCircle, Minus, Phone, Plus, Search, Send, ShoppingBag, ShoppingCart, UserRound, X } from 'lucide-react';
 import type { Banner, Product, PromoCard } from './types';
-import { createStorefrontOrder, loadBanners, loadCategories, loadProducts, loadStoreBranding, subscribeToCatalogue, type RemoteCategory, type StoreContentBlock } from './lib/commerce';
+import { createContactMessage, createStorefrontOrder, loadBanners, loadCategories, loadProducts, loadStoreBranding, subscribeToCatalogue, type RemoteCategory, type StoreContentBlock } from './lib/commerce';
 import './storefront.css';
 
 type CartLine = { product: Product; quantity: number };
@@ -115,7 +115,9 @@ function CategoryPage({ categories, selectedCategory, products, loading, onAdd, 
 
 function ContactPage() {
   const [sent, setSent] = useState(false);
-  const submitContact = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); setSent(true); event.currentTarget.reset(); };
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const submitContact = async (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); setSubmitting(true); setError(''); const form = new FormData(event.currentTarget); try { await createContactMessage({ name: String(form.get('name') || ''), email: String(form.get('email') || ''), phone: String(form.get('phone') || ''), subject: String(form.get('subject') || ''), message: String(form.get('message') || '') }); setSent(true); event.currentTarget.reset(); } catch { setError('We could not send your message right now. Please try WhatsApp or email.'); } finally { setSubmitting(false); } };
   return <section className="contact-page">
     <div className="contact-page-heading"><span className="store-kicker">WOODORA</span><h1>Contact Us</h1><p>Have a question or need help with an order? We’re here for you.</p></div>
     <div className="contact-page-grid">
@@ -130,8 +132,9 @@ function ContactPage() {
         <span className="store-kicker">SEND A MESSAGE</span><h2>We’d love to hear from you.</h2><p className="contact-form-intro">Please fill out the form and our team will get back to you shortly.</p>
         <div className="contact-form-grid"><label>Your Name *<input required name="name" placeholder="Your name" /></label><label>Your Email *<input required type="email" name="email" placeholder="you@example.com" /></label><label>Your Phone *<input required name="phone" placeholder="+92 330 3511464" /></label><label>Subject *<input required name="subject" placeholder="How can we help?" /></label></div>
         <label className="contact-message-field">Your Message *<textarea required name="message" placeholder="Tell us how we can help..." /></label>
-        {sent && <p className="contact-success" role="status">Thank you — your message is ready for our team.</p>}
-        <button className="contact-submit" type="submit">Send Message <Send size={16} /></button>
+        {sent && <p className="contact-success" role="status">Thank you — your message has been sent to the WOODORA team.</p>}
+        {error && <p className="contact-error" role="alert">{error}</p>}
+        <button className="contact-submit" type="submit" disabled={submitting}>{submitting ? 'Sending…' : 'Send Message'} {!submitting && <Send size={16} />}</button>
       </form>
     </div>
   </section>;

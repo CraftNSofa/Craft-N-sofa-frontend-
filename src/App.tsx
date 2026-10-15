@@ -23,6 +23,7 @@ import {
   Plus,
   Search,
   Settings,
+  Mail,
   ShoppingBag,
   Tag,
   Trash2,
@@ -33,13 +34,13 @@ import {
   X,
 } from 'lucide-react';
 import type { Banner, Product, PromoCard, Tag as ProductTag } from './types';
-import type { StoreContentBlock, StoreContentBlockKind } from './lib/commerce';
+import type { RemoteContactMessage, StoreContentBlock, StoreContentBlockKind } from './lib/commerce';
 import { INITIAL_SAMPLE_PRODUCTS } from './config/supabase';
-import { clearStoreLogo, createExpense, deleteCategory, deleteProduct as deleteRemoteProduct, deleteStoreBanner, deleteTag, getCurrentUser, loadBanners, loadCategories, loadExpenses, loadOrders, loadProducts, loadStoreBranding, loadTags, saveStoreContent, uploadSecondaryStoreImage, clearSecondaryStoreImage, uploadStoreProductBanner, clearStoreProductBanner, saveStoreProductBannerTitle, signInAdmin, signInAdminWithGoogle, sendAdminPasswordReset, signOutAdmin, subscribeToOrders, updateOrderStatus as updateRemoteOrderStatus, upsertCategory, upsertTag, saveProduct as saveRemoteProduct, uploadProductImage, uploadCategoryImage, uploadStoreBanner, replaceStoreBannerAssets, uploadStoreLogo, savePromoCards as saveRemotePromoCards, uploadPromoCardImage, deletePromoCardImage, uploadStoreContentImage, deleteStoreContentImage } from './lib/commerce';
+import { clearStoreLogo, createExpense, deleteCategory, deleteProduct as deleteRemoteProduct, deleteStoreBanner, deleteTag, getCurrentUser, loadBanners, loadCategories, loadContactMessages, loadExpenses, loadOrders, loadProducts, loadStoreBranding, loadTags, saveStoreContent, uploadSecondaryStoreImage, clearSecondaryStoreImage, uploadStoreProductBanner, clearStoreProductBanner, saveStoreProductBannerTitle, signInAdmin, signInAdminWithGoogle, sendAdminPasswordReset, signOutAdmin, subscribeToContactMessages, subscribeToOrders, updateContactMessageStatus, updateOrderStatus as updateRemoteOrderStatus, upsertCategory, upsertTag, saveProduct as saveRemoteProduct, uploadProductImage, uploadCategoryImage, uploadStoreBanner, replaceStoreBannerAssets, uploadStoreLogo, savePromoCards as saveRemotePromoCards, uploadPromoCardImage, deletePromoCardImage, uploadStoreContentImage, deleteStoreContentImage } from './lib/commerce';
 import { getSupabaseClient } from './config/supabase';
 import { LiveProductModal } from './components/LiveProductModal';
 
-type Tab = 'overview' | 'products' | 'add-product' | 'add-category' | 'categories' | 'add-tag' | 'tags' | 'orders' | 'finance' | 'promotions' | 'settings';
+type Tab = 'overview' | 'products' | 'add-product' | 'add-category' | 'categories' | 'add-tag' | 'tags' | 'orders' | 'contact-messages' | 'finance' | 'promotions' | 'settings';
 type OrderStatus = 'Pending' | 'Confirmed' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
 type Category = { id: string; name: string; description: string; active: boolean; image_url?: string | null; slug?: string; parent_id?: string | null };
 type AdminTag = ProductTag;
@@ -101,6 +102,18 @@ function StatusPill({ status }: { status: OrderStatus }) {
   return <span className={`status-pill ${colors[status]}`}><span />{status}</span>;
 }
 
+function ContactMessagesView({ messages, query, onQuery, onToggle }: { messages: RemoteContactMessage[]; query: string; onQuery: (value: string) => void; onToggle: (message: RemoteContactMessage) => void }) {
+  const filtered = messages.filter(message => `${message.name} ${message.email} ${message.phone} ${message.subject} ${message.message}`.toLowerCase().includes(query.toLowerCase()));
+  return <section className="contact-inbox">
+    <div className="toolbar"><div><p className="eyebrow">CUSTOMER ENQUIRIES</p><h2 className="inbox-title">Contact messages</h2></div><div className="search-box"><Search size={15} /><input value={query} onChange={event => onQuery(event.target.value)} placeholder="Search messages" /></div></div>
+    {!filtered.length ? <div className="panel empty-inbox"><Mail size={24} /><h3>No contact messages yet</h3><p>Messages submitted from the WOODORA Contact Us page will appear here.</p></div> : <div className="contact-message-list">{filtered.map(message => <article className={`contact-message-card ${message.status === 'unread' ? 'is-unread' : ''}`} key={message.id}>
+      <div className="contact-message-head"><div><div className="contact-message-sender"><span className="contact-avatar">{message.name.slice(0, 1).toUpperCase()}</span><div><strong>{message.name}</strong><small>{new Date(message.created_at).toLocaleString()}</small></div></div></div><button type="button" className="message-status-button" onClick={() => onToggle(message)}>{message.status === 'unread' ? 'Mark as read' : 'Mark unread'}</button></div>
+      <h3>{message.subject}</h3><p className="contact-message-body">{message.message}</p>
+      <div className="contact-message-meta"><a href={`mailto:${message.email}`}>{message.email}</a><a href={`tel:${message.phone.replace(/\s/g, '')}`}>{message.phone}</a></div>
+    </article>)}</div>}
+  </section>;
+}
+
 function App() {
   const [session, setSession] = useState(false);
   const [passwordRecovery, setPasswordRecovery] = useState(false);
@@ -116,6 +129,7 @@ function App() {
   const [tags, setTags] = usePersisted<AdminTag[]>('cns_tags', starterTags);
   const [orders, setOrders] = usePersisted<Order[]>('cns_orders', starterOrders);
   const [expenses, setExpenses] = usePersisted<Expense[]>('cns_expenses', starterExpenses);
+  const [contactMessages, setContactMessages] = usePersisted<RemoteContactMessage[]>('woodora_contact_messages', []);
   const [query, setQuery] = useState('');
 
   useEffect(() => {
@@ -132,9 +146,9 @@ function App() {
         return;
       }
       setSession(true);
-      const results = await Promise.allSettled([loadProducts(), loadCategories(), loadTags(), loadOrders(), loadExpenses(), loadStoreBranding(), loadBanners()]);
+      const results = await Promise.allSettled([loadProducts(), loadCategories(), loadTags(), loadOrders(), loadExpenses(), loadStoreBranding(), loadBanners(), loadContactMessages()]);
       if (!active) return;
-      const [productResult, categoryResult, tagResult, orderResult, expenseResult, brandingResult, bannerResult] = results;
+      const [productResult, categoryResult, tagResult, orderResult, expenseResult, brandingResult, bannerResult, contactResult] = results;
       if (productResult.status === 'fulfilled') setProducts(productResult.value);
       if (categoryResult.status === 'fulfilled') setCategories(categoryResult.value.map(category => ({ id: category.id, name: category.name, description: category.description || '', active: category.active, image_url: category.image_url || null, slug: category.slug, parent_id: category.parent_id || null })));
       if (tagResult.status === 'fulfilled') setTags(tagResult.value.map(tag => ({ id: tag.id, name: tag.name, description: tag.description || '', active: tag.active })));
@@ -142,6 +156,7 @@ function App() {
       if (expenseResult.status === 'fulfilled') setExpenses(expenseResult.value.map(expense => ({ id: expense.id, title: expense.title, category: expense.category, amount: Number(expense.amount), date: expense.expense_date })));
       if (brandingResult.status === 'fulfilled') { setBrandLogoUrl(brandingResult.value.logo_url); setStoreContent({ custom_html: brandingResult.value.custom_html || '', custom_css: brandingResult.value.custom_css || '', secondary_image_url: brandingResult.value.secondary_image_url || null, product_banner_url: brandingResult.value.product_banner_url || null, product_banner_title: brandingResult.value.product_banner_title || 'L-Shaped Corner and Sofa Set', secondary_image_title: brandingResult.value.secondary_image_title || 'Woodora collection', content_blocks: brandingResult.value.content_blocks || [] }); setPromoCards((brandingResult.value.promo_cards || []).sort((a, b) => a.sort_order - b.sort_order)); }
       if (bannerResult.status === 'fulfilled') setBanners(bannerResult.value);
+      if (contactResult.status === 'fulfilled') setContactMessages(contactResult.value);
       setRemoteReady(true);
     }).catch(() => undefined);
     return () => { active = false; subscription.unsubscribe(); };
@@ -150,6 +165,11 @@ function App() {
   useEffect(() => {
     if (!remoteReady) return;
     const channel = subscribeToOrders(() => { loadOrders().then(remoteOrders => setOrders(remoteOrders.map(order => ({ id: order.id, customer: order.customer_name, location: String(order.shipping_address?.city || 'Online'), items: order.order_items?.reduce((sum, item) => sum + item.quantity, 0) || 0, total: Number(order.total), cost: order.order_items?.reduce((sum, item) => sum + Number(item.cost_price) * item.quantity, 0) || 0, status: ({ pending: 'Pending', confirmed: 'Confirmed', processing: 'Processing', shipped: 'Shipped', delivered: 'Delivered', cancelled: 'Cancelled' } as Record<string, OrderStatus>)[order.status] || 'Pending', date: order.created_at.slice(0, 10), payment: order.payment_status === 'paid' ? 'Paid' : 'Pending' })))).catch(() => undefined); });
+    return () => { getSupabaseClient().removeChannel(channel); };
+  }, [remoteReady]);
+  useEffect(() => {
+    if (!remoteReady) return;
+    const channel = subscribeToContactMessages(() => { loadContactMessages().then(setContactMessages).catch(() => undefined); });
     return () => { getSupabaseClient().removeChannel(channel); };
   }, [remoteReady]);
   const [productModal, setProductModal] = useState<ProductForm | null>(null);
@@ -182,6 +202,7 @@ function App() {
     { id: 'add-tag', label: 'Add Tag', icon: Plus },
     { id: 'tags', label: 'Tag List', icon: Tag },
     { id: 'orders', label: 'Live Orders', icon: ShoppingBag, badge: orders.filter(o => ['Pending', 'Confirmed', 'Processing'].includes(o.status)).length },
+    { id: 'contact-messages', label: 'Contact Messages', icon: Mail, badge: contactMessages.filter(message => message.status === 'unread').length },
     { id: 'finance', label: 'Finance & Reports', icon: CircleDollarSign },
     { id: 'promotions', label: 'Promo Cards', icon: ImagePlus },
     { id: 'settings', label: 'Store Settings', icon: Settings },
@@ -246,6 +267,9 @@ function App() {
     showToast('Product banner removed');
   };
   const logout = async () => { await signOutAdmin(); setSession(false); setRemoteReady(false); };
+  const markContactMessage = async (message: RemoteContactMessage) => {
+    try { const saved = remoteReady ? await updateContactMessageStatus(message.id, message.status === 'unread' ? 'read' : 'unread') : { ...message, status: message.status === 'unread' ? 'read' : 'unread' as const }; setContactMessages(current => current.map(item => item.id === message.id ? saved : item)); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not update message'); }
+  };
 
   if (passwordRecovery) return <PasswordRecoveryScreen onDone={() => { setPasswordRecovery(false); setSession(false); window.history.replaceState({}, document.title, window.location.pathname); }} />;
   if (!session) return <LoginScreen onLogin={() => setSession(true)} authNotice={loginNotice} />;
@@ -266,6 +290,7 @@ function App() {
         {tab === 'categories' && <CategoryListView categories={categories} onAdd={() => setCategoryModal(true)} onDelete={id => saveCategories(categories.filter(category => category.id !== id))} onReplaceImage={replaceCategoryImage} />}
         {tab === 'tags' && <TagListView tags={tags} onAdd={() => setTagModal(true)} onDelete={id => saveTags(tags.filter(tag => tag.id !== id))} />}
         {tab === 'orders' && <OrdersView orders={orders} onStatus={updateOrder} onSelect={setSelectedOrder} query={query} onQuery={setQuery} />}
+        {tab === 'contact-messages' && <ContactMessagesView messages={contactMessages} query={query} onQuery={setQuery} onToggle={markContactMessage} />}
         {tab === 'finance' && <FinanceView revenue={revenue} productCost={productCost} grossProfit={grossProfit} netProfit={netProfit} expenses={expenses} onExpense={() => setExpenseModal(true)} />}
         {tab === 'promotions' && <PromoCardsView cards={promoCards} categories={activeCategories} onSave={savePromoCards} onUploadImage={uploadPromoImage} />}
         {tab === 'settings' && <StoreSettingsView logoUrl={brandLogoUrl} banners={banners} tags={tags} content={storeContent} onSaveContent={handleSaveStoreContent} onUploadSecondary={async (file, title) => { try { if (!remoteReady) throw new Error('Connect the admin workspace before uploading storefront images'); await handleUploadSecondary(file, title); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not upload secondary image'); } }} onClearSecondary={async () => { try { if (!remoteReady) throw new Error('Connect the admin workspace before changing storefront images'); await handleClearSecondary(); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not remove secondary image'); }}} onUploadProductBanner={async file => { try { if (!remoteReady) throw new Error('Connect the admin workspace before uploading storefront images'); await handleUploadProductBanner(file); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not upload product banner'); } }} onClearProductBanner={async () => { try { if (!remoteReady) throw new Error('Connect the admin workspace before changing storefront images'); await handleClearProductBanner(); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not remove product banner'); } }} onSaveProductBannerTitle={async title => { try { if (!remoteReady) throw new Error('Connect the admin workspace before saving storefront text'); await handleSaveProductBannerTitle(title); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not save banner text'); } }} onUploadBlockImage={async (file, previousUrl) => { try { if (!remoteReady) return URL.createObjectURL(file); return await uploadStoreContentImage(file, previousUrl); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not upload block image'); throw error; } }} onChangeLogo={() => setBrandingModal(true)} onAddBanner={() => setBannerModal(true)} onEditBanner={banner => setEditingBanner(banner)} onDeleteBanner={async banner => { try { if (!remoteReady) throw new Error('Connect the admin workspace before changing banners'); await deleteStoreBanner(banner.id, banner.image_url, banner.mobile_image_url); setBanners(current => current.filter(item => item.id !== banner.id)); showToast('Banner removed'); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not remove banner'); } }} onRemove={async () => { try { if (!remoteReady) throw new Error('Connect the admin workspace before changing branding'); await clearStoreLogo(brandLogoUrl); setBrandLogoUrl(null); showToast('Store logo removed'); } catch (error) { showToast(error instanceof Error ? error.message : 'Could not remove logo'); } }}  onLogout={logout} />}
