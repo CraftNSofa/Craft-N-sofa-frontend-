@@ -1,7 +1,7 @@
 create table if not exists public.store_banners (
   id uuid primary key default gen_random_uuid(),
   image_url text not null,
-  alt_text text not null default 'Craft N Sofa collection',
+  alt_text text not null default 'Woodora collection',
   active boolean not null default true,
   sort_order integer not null default 0,
   created_at timestamptz not null default now(),

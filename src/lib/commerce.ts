@@ -46,7 +46,7 @@ export async function loadBanners(): Promise<RemoteBanner[]> {
   return data ?? [];
 }
 
-export async function uploadStoreBanner(desktopFile: File, mobileFile: File | null, altText = 'Craft N Sofa collection') {
+export async function uploadStoreBanner(desktopFile: File, mobileFile: File | null, altText = 'Woodora collection') {
   const upload = async (file: File, prefix: string) => {
     const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
     const storagePath = `banners/${prefix}-${crypto.randomUUID()}.${extension}`;
@@ -57,7 +57,7 @@ export async function uploadStoreBanner(desktopFile: File, mobileFile: File | nu
   };
   const desktopUrl = await upload(desktopFile, 'desktop-banner');
   const mobileUrl = mobileFile ? await upload(mobileFile, 'mobile-banner') : null;
-  const { data, error } = await supabase().from('store_banners').insert({ image_url: desktopUrl, mobile_image_url: mobileUrl, alt_text: altText.trim() || 'Craft N Sofa collection', sort_order: 0, active: true }).select('id,image_url,mobile_image_url,alt_text,active,sort_order,created_at,updated_at').single();
+  const { data, error } = await supabase().from('store_banners').insert({ image_url: desktopUrl, mobile_image_url: mobileUrl, alt_text: altText.trim() || 'Woodora collection', sort_order: 0, active: true }).select('id,image_url,mobile_image_url,alt_text,active,sort_order,created_at,updated_at').single();
   if (error) throw error;
   return data as RemoteBanner;
 }
@@ -78,7 +78,7 @@ export async function replaceStoreBannerAssets(banner: RemoteBanner, desktopFile
   };
   const nextDesktopUrl = desktopFile ? await upload(desktopFile, 'desktop-banner') : banner.image_url;
   const nextMobileUrl = removeMobile ? null : mobileFile ? await upload(mobileFile, 'mobile-banner') : banner.mobile_image_url;
-  const { data, error } = await supabase().from('store_banners').update({ image_url: nextDesktopUrl, mobile_image_url: nextMobileUrl, alt_text: altText.trim() || 'Craft N Sofa collection' }).eq('id', banner.id).select('id,image_url,mobile_image_url,alt_text,active,sort_order,created_at,updated_at').single();
+  const { data, error } = await supabase().from('store_banners').update({ image_url: nextDesktopUrl, mobile_image_url: nextMobileUrl, alt_text: altText.trim() || 'Woodora collection' }).eq('id', banner.id).select('id,image_url,mobile_image_url,alt_text,active,sort_order,created_at,updated_at').single();
   if (error) throw error;
   const marker = '/storage/v1/object/public/brand-assets/';
   const oldPaths = [desktopFile ? banner.image_url : null, (mobileFile || removeMobile) ? banner.mobile_image_url : null].filter(Boolean).map(url => url!.includes(marker) ? url!.split(marker)[1] : null).filter(Boolean) as string[];
@@ -102,12 +102,12 @@ export type StoreContentBlockKind = 'html' | 'main-banner' | 'banner' | 'tag-car
 export type StoreContentBlock = { id: string; kind?: StoreContentBlockKind; title: string; html: string; css: string; image_url: string | null; mobile_image_url?: string | null; image_title: string; tag_name?: string; tag_names?: string[]; active: boolean; sort_order: number; created_at?: string; updated_at?: string };
 export type StoreBranding = { id: string; logo_url: string | null; custom_html: string; custom_css: string; secondary_image_url: string | null; secondary_image_title: string; product_banner_url: string | null; product_banner_title: string; content_blocks: StoreContentBlock[]; promo_cards: PromoCard[]; updated_at: string };
 
-const defaultStoreBranding = (): StoreBranding => ({ id: 'default', logo_url: null, custom_html: '', custom_css: '', secondary_image_url: null, secondary_image_title: 'Craft N Sofa collection', product_banner_url: null, product_banner_title: 'L-Shaped Corner and Sofa Set', content_blocks: [], promo_cards: [], updated_at: new Date(0).toISOString() });
+const defaultStoreBranding = (): StoreBranding => ({ id: 'default', logo_url: null, custom_html: '', custom_css: '', secondary_image_url: null, secondary_image_title: 'Woodora collection', product_banner_url: null, product_banner_title: 'L-Shaped Corner and Sofa Set', content_blocks: [], promo_cards: [], updated_at: new Date(0).toISOString() });
 const normalizeStoreBranding = (data: Record<string, unknown> | null): StoreBranding => {
   if (!data) return defaultStoreBranding();
   const storedBlocks = Array.isArray(data.content_blocks) ? data.content_blocks as StoreContentBlock[] : [];
   const legacyBlock: StoreContentBlock[] = storedBlocks.length || !String(data.custom_html || '').trim() ? [] : [{ id: 'legacy-custom-content', title: 'Homepage block', html: String(data.custom_html || ''), css: String(data.custom_css || ''), image_url: null, image_title: '', active: true, sort_order: 0 }];
-  return { ...defaultStoreBranding(), ...data, secondary_image_title: String(data.secondary_image_title || 'Craft N Sofa collection'), product_banner_url: data.product_banner_url ? String(data.product_banner_url) : null, product_banner_title: String(data.product_banner_title || 'L-Shaped Corner and Sofa Set'), content_blocks: storedBlocks.length ? storedBlocks : legacyBlock, promo_cards: Array.isArray(data.promo_cards) ? data.promo_cards as PromoCard[] : [] } as StoreBranding;
+  return { ...defaultStoreBranding(), ...data, secondary_image_title: String(data.secondary_image_title || 'Woodora collection'), product_banner_url: data.product_banner_url ? String(data.product_banner_url) : null, product_banner_title: String(data.product_banner_title || 'L-Shaped Corner and Sofa Set'), content_blocks: storedBlocks.length ? storedBlocks : legacyBlock, promo_cards: Array.isArray(data.promo_cards) ? data.promo_cards as PromoCard[] : [] } as StoreBranding;
 };
 
 export async function loadStoreBranding(): Promise<StoreBranding> {
@@ -118,7 +118,7 @@ export async function loadStoreBranding(): Promise<StoreBranding> {
 
 export async function saveStoreContent(content: { custom_html: string; custom_css: string; secondary_image_title: string; content_blocks: StoreContentBlock[] }) {
   const normalizedBlocks = content.content_blocks.map((block, index) => ({ ...block, sort_order: index }));
-  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', custom_html: content.custom_html, custom_css: content.custom_css, secondary_image_title: content.secondary_image_title.trim() || 'Craft N Sofa collection', content_blocks: normalizedBlocks, updated_at: new Date().toISOString() }).select(brandingFields).single();
+  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', custom_html: content.custom_html, custom_css: content.custom_css, secondary_image_title: content.secondary_image_title.trim() || 'Woodora collection', content_blocks: normalizedBlocks, updated_at: new Date().toISOString() }).select(brandingFields).single();
   if (error) throw error;
   return normalizeStoreBranding(data as Record<string, unknown>);
 }
@@ -140,9 +140,9 @@ export async function deleteStoreContentImage(imageUrl?: string | null) {
   if (imagePath) await supabase().storage.from('brand-assets').remove([imagePath]);
 }
 
-export async function uploadSecondaryStoreImage(file: File, previousUrl?: string | null, title = 'Craft N Sofa collection') {
+export async function uploadSecondaryStoreImage(file: File, previousUrl?: string | null, title = 'Woodora collection') {
   const publicUrl = await uploadStoreContentImage(file, previousUrl);
-  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', secondary_image_url: publicUrl, secondary_image_title: title.trim() || 'Craft N Sofa collection', updated_at: new Date().toISOString() }).select(brandingFields).single();
+  const { data, error } = await supabase().from('store_settings').upsert({ id: 'default', secondary_image_url: publicUrl, secondary_image_title: title.trim() || 'Woodora collection', updated_at: new Date().toISOString() }).select(brandingFields).single();
   if (error) throw error;
   return normalizeStoreBranding(data as Record<string, unknown>);
 }

@@ -1,4 +1,4 @@
--- Craft N Sofa commerce foundation
+-- Woodora commerce foundation
 -- Run after enabling Supabase Auth. Admin users must have app_metadata.role = 'admin'.
 
 create extension if not exists pgcrypto;

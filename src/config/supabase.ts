@@ -150,7 +150,7 @@ export const INITIAL_SAMPLE_PRODUCTS: Product[] = [
 ];
 
 export const SUPABASE_SQL_SETUP_SCRIPT = `-- ==========================================
--- CRAFT N SOFA SUPABASE SETUP MIGRATION
+-- WOODORA SUPABASE SETUP MIGRATION
 -- Execute this script in your Supabase SQL Editor
 -- ==========================================
 

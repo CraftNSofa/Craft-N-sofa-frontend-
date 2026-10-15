@@ -1,6 +1,8 @@
 {
-  "name": "CRAFT N SOFA Admin",
-  "description": "Product and inventory management backend for CRAFT N SOFA furniture store.",
+  "name": "Woodora Admin",
+  "description": "Product and inventory management backend for Woodora furniture store.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

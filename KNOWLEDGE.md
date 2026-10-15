@@ -1,7 +1,7 @@
-# Craft N Sofa Frontend — System Context
+# Woodora Frontend — System Context
 
 **Document owner:** Manus AI  
-**Repository:** `CraftNSofa/Craft-N-sofa-frontend-`  
+**Repository:** `CraftNSofa/woodora`  
 **Analysis baseline:** repository state cloned for this implementation session  
 **Purpose:** provide a durable technical reference for future development, review, and feature work.
 
@@ -194,7 +194,7 @@ This document is derived from the repository files listed below and should be up
 
 ## References
 
-[1]: https://github.com/CraftNSofa/Craft-N-sofa-frontend- "Craft N Sofa Frontend repository"
+[1]: https://github.com/CraftNSofa/woodora "Woodora Frontend repository"
 [2]: https://supabase.com/docs/guides/database/postgres/row-level-security "Supabase Row Level Security documentation"
 [3]: https://supabase.com/docs/guides/storage/security/access-control "Supabase Storage access control documentation"
 

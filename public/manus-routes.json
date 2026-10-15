@@ -1,0 +1,24 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "title": "Woodora Home"
+    },
+    {
+      "path": "/manage",
+      "title": "Woodora Admin"
+    },
+    {
+      "path": "/products",
+      "title": "Woodora Products"
+    },
+    {
+      "path": "/category",
+      "title": "Woodora Categories"
+    },
+    {
+      "path": "/category/:slug",
+      "title": "Woodora Category"
+    }
+  ]
+}

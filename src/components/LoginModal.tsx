@@ -68,7 +68,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess, onOpenSe
 
   const handleDemoLogin = () => {
     const demoToken = 'demo_admin_access_token';
-    const demoEmail = email.trim() || 'admin@craftnsofa.com';
+    const demoEmail = email.trim() || 'admin@woodora.com';
     localStorage.setItem('supabase_token', demoToken);
     localStorage.setItem('admin_email', demoEmail);
     onLoginSuccess(demoToken, demoEmail, true);
@@ -118,7 +118,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess, onOpenSe
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. admin@craftnsofa.com"
+              placeholder="e.g. admin@woodora.com"
               className="w-full px-4 py-3 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
             />
           </div>

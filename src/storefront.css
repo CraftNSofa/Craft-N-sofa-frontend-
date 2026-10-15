@@ -347,9 +347,9 @@
 
 /* Automatic homepage product marquee */
 .collection-carousel { overflow: hidden; position: relative; width: 100%; }
-.collection-carousel .collection-track { animation: craft-sofa-marquee 34s linear infinite; display: flex; gap: 22px; overflow: visible !important; padding-right: 0 !important; scroll-behavior: auto; width: max-content; will-change: transform; }
+.collection-carousel .collection-track { animation: woodora-marquee 34s linear infinite; display: flex; gap: 22px; overflow: visible !important; padding-right: 0 !important; scroll-behavior: auto; width: max-content; will-change: transform; }
 .collection-carousel .collection-track .store-product { flex: 0 0 clamp(220px, 22vw, 316px); }
-@keyframes craft-sofa-marquee {
+@keyframes woodora-marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
@@ -416,7 +416,7 @@
 
 /* Reusable homepage product carousel blocks */
 .homepage-product-block { margin: 0 auto; max-width: none; overflow: visible; padding: 70px 44px; }
-.homepage-product-track { animation: craft-sofa-marquee 36s linear infinite; display: flex; flex-wrap: nowrap; gap: 22px; overflow: visible; width: max-content; }
+.homepage-product-track { animation: woodora-marquee 36s linear infinite; display: flex; flex-wrap: nowrap; gap: 22px; overflow: visible; width: max-content; }
 .homepage-product-track .store-product { flex: 0 0 clamp(220px, 22vw, 316px); }
 @media (max-width: 680px) { .homepage-product-block { padding: 55px 22px; } .homepage-product-track { gap: 14px; } .homepage-product-track .store-product { flex-basis: min(42vw, 190px); } }
 
