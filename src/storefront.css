@@ -962,3 +962,93 @@
 @media (max-width: 680px) {
   .category-page-products .store-product-meta .store-card-add--labeled { font-size: 12px; min-height: 42px; padding: 11px 12px; }
 }
+
+/* WOODORA footer */
+.store-footer {
+  background: #3a2117;
+  color: #fff;
+  display: block;
+  margin: 0;
+  max-width: none;
+  padding: 0;
+}
+.store-footer-main {
+  display: grid;
+  gap: 72px;
+  grid-template-columns: minmax(280px, 1.4fr) minmax(150px, .7fr) minmax(300px, 1fr);
+  margin: auto;
+  max-width: 1320px;
+  padding: 68px 44px 58px;
+}
+.store-footer-brand { max-width: 410px; }
+.store-footer-logo {
+  color: #fff;
+  display: inline-block;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-decoration: none;
+}
+.store-footer-logo img {
+  filter: brightness(0) invert(1);
+  max-height: 58px;
+  max-width: 205px;
+  object-fit: contain;
+}
+.store-footer-brand p {
+  color: rgba(255,255,255,.76);
+  font-size: 13px;
+  line-height: 1.75;
+  margin: 25px 0 0;
+}
+.store-footer h2 {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  margin: 3px 0 22px;
+  text-transform: uppercase;
+}
+.store-footer-links,
+.store-footer-contact { display: flex; flex-direction: column; }
+.store-footer-links a,
+.store-footer-contact a,
+.store-footer-contact p {
+  align-items: flex-start;
+  color: rgba(255,255,255,.78);
+  display: flex;
+  font-size: 12px;
+  gap: 9px;
+  line-height: 1.6;
+  margin: 0 0 14px;
+  text-decoration: none;
+}
+.store-footer-links a:hover,
+.store-footer-contact a:hover { color: #fff; }
+.store-footer-contact svg { flex: 0 0 auto; margin-top: 2px; }
+.store-footer-bottom {
+  border-top: 1px solid rgba(255,255,255,.15);
+  color: rgba(255,255,255,.62);
+  font-size: 11px;
+  margin: 0 auto;
+  max-width: 1320px;
+  padding: 19px 44px 22px;
+  text-align: center;
+}
+.store-footer-bottom small { color: inherit; font-size: inherit; }
+@media (max-width: 800px) {
+  .store-footer-main {
+    gap: 38px;
+    grid-template-columns: 1fr;
+    padding: 48px 22px 38px;
+  }
+  .store-footer-brand { max-width: none; }
+  .store-footer-logo { font-size: 22px; }
+  .store-footer-brand p { font-size: 12px; margin-top: 18px; }
+  .store-footer h2 { margin-bottom: 15px; }
+  .store-footer-links a,
+  .store-footer-contact a,
+  .store-footer-contact p { font-size: 12px; margin-bottom: 11px; }
+  .store-footer-bottom { padding: 17px 22px 20px; }
+}
