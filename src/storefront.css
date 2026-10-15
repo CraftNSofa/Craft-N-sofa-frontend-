@@ -1095,3 +1095,18 @@
 @media (max-width: 800px) {
   .store-footer-main { padding-bottom: 28px; padding-top: 34px; }
 }
+
+
+/* Checkout calls to action: match the flash-news brown */
+.cart-drawer .checkout-proceed-button,
+.checkout-card .place-request-button {
+  background: #5C4033;
+  border-color: #5C4033;
+  color: #FFFFFF;
+}
+.cart-drawer .checkout-proceed-button:hover,
+.checkout-card .place-request-button:hover {
+  background: #765F4E;
+  border-color: #765F4E;
+  color: #FFFFFF;
+}
