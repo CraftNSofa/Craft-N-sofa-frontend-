@@ -11,7 +11,7 @@ const money = (value: number) => `Rs ${Math.round(value).toLocaleString('en-IN')
 const slugify = (value: string) => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 const matchesCategoryTitle = (product: Product, title: string) => { const productCategory = slugify(product.category || ''); const bannerTitle = slugify(title || ''); return Boolean(productCategory && bannerTitle && (productCategory === bannerTitle || productCategory.includes(bannerTitle) || bannerTitle.includes(productCategory))); };
 
-function ProductCard({ product, onAdd, onView }: { product: Product; onAdd: (product: Product) => void; onView: (product: Product) => void; key?: string }) {
+function ProductCard({ product, onAdd, onView, actionStyle = 'icon' }: { product: Product; onAdd: (product: Product) => void; onView: (product: Product) => void; actionStyle?: 'icon' | 'label'; key?: string }) {
   const originalPrice = Number(product.original_price || product.price || 0);
   const currentPrice = Number(product.discount_price ?? product.price ?? 0);
   const hasSale = product.discount_price !== null && currentPrice < originalPrice;
@@ -26,7 +26,7 @@ function ProductCard({ product, onAdd, onView }: { product: Product; onAdd: (pro
     <div className="store-product-meta">
       <h3>{product.name}</h3>
       <div className="product-price">{hasSale && <del>{money(originalPrice)}</del>}<strong>{money(currentPrice)}</strong></div>
-      <button type="button" className="store-card-add" aria-label={`Open ${product.name} details`} onClick={() => onView(product)}><ShoppingCart size={22} /></button>
+      <button type="button" className={`store-card-add${actionStyle === 'label' ? ' store-card-add--labeled' : ''}`} aria-label={actionStyle === 'label' ? `Add to Cart: open ${product.name} options` : `Open ${product.name} details`} onClick={() => onView(product)}>{actionStyle === 'label' ? <span>Add to Cart</span> : <ShoppingCart size={22} />}</button>
     </div>
   </article>;
 }
@@ -99,7 +99,7 @@ function ProductQuickView({ product, onAdd, onClose }: { product: Product; onAdd
 }
 
 function AllProductsPage({ products, loading, onAdd, onView }: { products: Product[]; loading: boolean; onAdd: (product: Product) => void; onView: (product: Product) => void }) {
-  return <section className="category-page all-products-page"><div className="category-page-breadcrumb"><a href="/">Home</a><ChevronDown size={13} /><span>Products</span></div><div className="category-page-heading"><span className="store-kicker">WOODORA</span><h1>All Products</h1><p>Explore every published product in our collection.</p></div><section className="category-page-products all-products-grid" id="products"><div className="section-heading"><div><span className="store-kicker">PRODUCTS</span><h2>Complete collection.</h2></div><span className="piece-count">{products.length} pieces</span></div>{loading ? <div className="store-loading">Loading products…</div> : products.length ? <div className="store-grid">{products.map(product => <ProductCard key={String(product.id)} product={product} onAdd={onAdd} onView={onView} />)}</div> : <div className="store-loading">No published products yet.</div>}</section></section>;
+  return <section className="category-page all-products-page"><div className="category-page-breadcrumb"><a href="/">Home</a><ChevronDown size={13} /><span>Products</span></div><div className="category-page-heading"><span className="store-kicker">WOODORA</span><h1>All Products</h1><p>Explore every published product in our collection.</p></div><section className="category-page-products all-products-grid" id="products"><div className="section-heading"><div><span className="store-kicker">PRODUCTS</span><h2>Complete collection.</h2></div><span className="piece-count">{products.length} pieces</span></div>{loading ? <div className="store-loading">Loading products…</div> : products.length ? <div className="store-grid">{products.map(product => <ProductCard key={String(product.id)} product={product} onAdd={onAdd} onView={onView} actionStyle="label" />)}</div> : <div className="store-loading">No published products yet.</div>}</section></section>;
 }
 
 function CategoryPage({ categories, selectedCategory, products, loading, onAdd, onView }: { categories: RemoteCategory[]; selectedCategory: RemoteCategory | null; products: Product[]; loading: boolean; onAdd: (product: Product) => void; onView: (product: Product) => void }) {
@@ -109,7 +109,7 @@ function CategoryPage({ categories, selectedCategory, products, loading, onAdd, 
     {selectedCategory && <div className="category-page-heading"><span className="store-kicker">COLLECTION</span><h1>{selectedCategory.name}</h1><p>Explore the pieces in this collection.</p></div>}
     <div className="category-page-grid">{activeCategories.map(category => { const slug = category.slug || slugify(category.name); return <a href={`/category/${slug}`} className={`category-page-card ${selectedCategory?.id === category.id ? 'selected' : ''}`} key={category.id}><div className="category-page-card-media">{category.image_url ? <img src={category.image_url} alt={category.name} /> : <span className="category-fallback">C<span>•</span>S</span>}<span className="category-page-card-overlay"><span className="store-kicker">COLLECTION</span><strong>{category.name}</strong><span>Shop collection <ArrowRight size={16} /></span></span></div></a>; })}</div>
     {!activeCategories.length && <div className="store-loading">Categories will appear here once added from the admin workspace.</div>}
-    {selectedCategory && <section className="category-page-products" id="category-products"><div className="section-heading"><div><span className="store-kicker">{selectedCategory.name.toUpperCase()}</span><h2>Pieces for living well.</h2></div><span className="piece-count">{products.length} pieces</span></div>{loading ? <div className="store-loading">Loading the collection…</div> : products.length ? <div className="store-grid">{products.map(product => <ProductCard key={String(product.id)} product={product} onAdd={onAdd} onView={onView} />)}</div> : <div className="store-loading">No products are assigned to this category yet.</div>}</section>}
+    {selectedCategory && <section className="category-page-products" id="category-products"><div className="section-heading"><div><span className="store-kicker">{selectedCategory.name.toUpperCase()}</span><h2>Pieces for living well.</h2></div><span className="piece-count">{products.length} pieces</span></div>{loading ? <div className="store-loading">Loading the collection…</div> : products.length ? <div className="store-grid">{products.map(product => <ProductCard key={String(product.id)} product={product} onAdd={onAdd} onView={onView} actionStyle="label" />)}</div> : <div className="store-loading">No products are assigned to this category yet.</div>}</section>}
   </section>;
 }
 
