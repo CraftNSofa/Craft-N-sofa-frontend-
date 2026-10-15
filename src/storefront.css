@@ -823,3 +823,17 @@
 .store-search-result-copy strong { display: -webkit-box; font-size: 12px; font-weight: 500; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .store-search-result-copy small { color: #777; font-size: 11px; }
 .store-search-empty { color: #777; font-size: 12px; margin: 0; padding: 16px; }
+
+/* Let product names use the full card width; clamp to one line so every cart button stays aligned. */
+.homepage-product-block .store-product-meta h3,
+.homepage-grid-block .store-product-meta h3,
+.collection .store-product-meta h3,
+.category-page-products .store-product-meta h3 {
+  display: block;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
