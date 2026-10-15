@@ -782,3 +782,8 @@
     width: 38px;
   }
 }
+
+/* The carousel keeps 10 px of bottom padding, so use 10 px here for a 20 px visual gap. */
+.homepage-product-block .product-carousel-banner {
+  margin-top: 10px;
+}
