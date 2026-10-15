@@ -721,3 +721,55 @@
   .product-detail-price-row > strong { font-size: 23px; }
   .product-detail-saving { font-size: 12px; }
 }
+
+/* Keep product names on one line and prevent the floating cart control from covering prices. */
+.store-product-meta h3 {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+.homepage-product-block .store-product-meta .product-price,
+.homepage-grid-block .store-product-meta .product-price,
+.collection .store-product-meta .product-price,
+.category-page-products .store-product-meta .product-price {
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  max-width: 100%;
+  padding-right: 48px;
+  text-align: left;
+  width: 100%;
+}
+.homepage-product-block .store-card-add,
+.homepage-grid-block .store-card-add,
+.collection .store-card-add,
+.category-page-products .store-card-add {
+  bottom: 12px;
+  height: 40px;
+  right: 12px;
+  width: 40px;
+}
+.homepage-product-block .store-card-add svg,
+.homepage-grid-block .store-card-add svg,
+.collection .store-card-add svg,
+.category-page-products .store-card-add svg {
+  height: 18px;
+  width: 18px;
+}
+
+/* Bring the first homepage content closer to the main banner. */
+.homepage-block-banner + .homepage-product-block,
+.homepage-block-banner + .homepage-grid-block,
+.homepage-block-banner + .store-content-block {
+  padding-top: 32px;
+}
+@media (max-width: 680px) {
+  .homepage-block-banner + .homepage-product-block,
+  .homepage-block-banner + .homepage-grid-block,
+  .homepage-block-banner + .store-content-block {
+    padding-top: 18px;
+  }
+}
