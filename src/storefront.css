@@ -787,3 +787,39 @@
 .homepage-product-block .product-carousel-banner {
   margin-top: 10px;
 }
+
+/* Live product matches beneath the storefront search field. */
+.store-search-results {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .14);
+  left: 0;
+  max-height: min(55vh, 360px);
+  overflow-y: auto;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 30;
+}
+.store-search-result {
+  align-items: center;
+  background: #fff;
+  border: 0;
+  border-bottom: 1px solid #ededed;
+  color: #222;
+  cursor: pointer;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 58px minmax(0, 1fr);
+  padding: 8px;
+  text-align: left;
+  width: 100%;
+}
+.store-search-result:last-child { border-bottom: 0; }
+.store-search-result:hover { background: #f8f7f4; }
+.store-search-result-image { background: #f0eee9; border-radius: 9px; height: 58px; overflow: hidden; width: 58px; }
+.store-search-result-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+.store-search-result-copy { display: grid; gap: 4px; min-width: 0; }
+.store-search-result-copy strong { display: -webkit-box; font-size: 12px; font-weight: 500; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.store-search-result-copy small { color: #777; font-size: 11px; }
+.store-search-empty { color: #777; font-size: 12px; margin: 0; padding: 16px; }
