@@ -1052,3 +1052,36 @@
   .store-footer-contact p { font-size: 12px; margin-bottom: 11px; }
   .store-footer-bottom { padding: 17px 22px 20px; }
 }
+
+/* WOODORA contact page */
+.contact-page { background: #f7f4f0; min-height: 620px; padding: 64px 44px 100px; }
+.contact-page-heading, .contact-page-grid { margin: 0 auto; max-width: 1180px; }
+.contact-page-heading h1 { color: #3a2117; font-family: 'Playfair Display', Georgia, serif; font-size: clamp(42px, 5vw, 68px); font-weight: 500; letter-spacing: -.045em; line-height: 1; margin: 14px 0 12px; }
+.contact-page-heading p { color: #786c65; font-size: 14px; margin: 0; }
+.contact-page-grid { align-items: stretch; display: grid; gap: 28px; grid-template-columns: minmax(280px, .8fr) minmax(0, 1.65fr); margin-top: 48px; }
+.contact-info-card, .contact-form-card { background: #fff; border: 1px solid #eadfd7; border-radius: 18px; box-shadow: 0 12px 30px rgba(58,33,23,.06); padding: 34px; }
+.contact-info-card h2, .contact-form-card h2 { color: #3a2117; font-family: 'Playfair Display', Georgia, serif; font-size: 29px; font-weight: 500; margin: 13px 0 28px; }
+.contact-detail { align-items: flex-start; border-top: 1px solid #eee5df; display: flex; gap: 13px; padding: 19px 0; }
+.contact-detail > span { align-items: center; background: #f3ebe6; border-radius: 50%; color: #8a4d2f; display: inline-flex; flex: 0 0 auto; height: 34px; justify-content: center; width: 34px; }
+.contact-detail small { color: #a2938a; display: block; font-size: 9px; letter-spacing: .12em; margin: 2px 0 7px; }
+.contact-detail p, .contact-detail a { color: #4d443f; font-size: 12px; line-height: 1.55; margin: 0; text-decoration: none; }
+.contact-detail a:hover { color: #8a4d2f; }
+.contact-form-card h2 { margin-bottom: 7px; }
+.contact-form-intro { color: #887a71; font-size: 12px; margin: 0 0 28px; }
+.contact-form-grid { border-top: 1px solid #eee5df; display: grid; gap: 19px 16px; grid-template-columns: 1fr 1fr; padding-top: 24px; }
+.contact-form-card label { color: #51463f; display: block; font-size: 11px; font-weight: 600; }
+.contact-form-card input, .contact-form-card textarea { background: #fbfaf9; border: 1px solid #dfd5ce; border-radius: 8px; color: #3a2117; display: block; font-size: 12px; margin-top: 8px; outline: none; padding: 13px 14px; width: 100%; }
+.contact-form-card input:focus, .contact-form-card textarea:focus { border-color: #8a4d2f; box-shadow: 0 0 0 3px rgba(138,77,47,.1); }
+.contact-form-card textarea { min-height: 135px; resize: vertical; }
+.contact-message-field { margin-top: 21px; }
+.contact-submit { align-items: center; background: #3a2117; border: 0; border-radius: 8px; color: #fff; display: inline-flex; font-size: 12px; font-weight: 600; gap: 10px; justify-content: center; margin-top: 20px; min-height: 46px; padding: 0 22px; }
+.contact-submit:hover { background: #542f21; }
+.contact-success { color: #3b815b; font-size: 12px; margin: 18px 0 0; }
+@media (max-width: 800px) {
+  .contact-page { padding: 46px 22px 70px; }
+  .contact-page-grid { grid-template-columns: 1fr; margin-top: 34px; }
+  .contact-info-card, .contact-form-card { padding: 25px 20px; }
+  .contact-info-card h2, .contact-form-card h2 { font-size: 26px; }
+  .contact-form-grid { grid-template-columns: 1fr; }
+  .contact-submit { width: 100%; }
+}

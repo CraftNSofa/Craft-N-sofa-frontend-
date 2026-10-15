@@ -19,6 +19,10 @@
     {
       "path": "/category/:slug",
       "title": "Woodora Category"
+    },
+    {
+      "path": "/contact",
+      "title": "Woodora Contact Us"
     }
   ]
 }
